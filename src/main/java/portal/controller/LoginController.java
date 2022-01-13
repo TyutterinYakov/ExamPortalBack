@@ -1,85 +1,74 @@
 package portal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import portal.dao.RoleRepository;
-import portal.model.Role;
-import portal.model.User;
-import portal.service.UserService;
-import portal.service.impl.UserServiceImpl;
+import portal.config.JwtUtils;
+import portal.model.JwtRequest;
+import portal.model.JwtResponse;
+import portal.service.impl.UserDetailServiceImpl;
 
 @RestController
-@RequestMapping("/user")
 public class LoginController {
-
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
-	private RoleRepository roleDao;
+	private AuthenticationManager manager;
+	
+	@Autowired
+	private UserDetailServiceImpl detailServiceImpl;
+	
+	@Autowired
+	private JwtUtils jwtUtils;
 	
 	
-	@PostMapping("/")
-	public User createUser(@RequestBody User user) {
-		return userService.createUser(user);
+	@PostMapping("/generate-token")
+	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
+		try {
+			System.out.println(jwtRequest.getPassword());
+			System.out.println(jwtRequest.getUserName());
+			authentificate(jwtRequest.getUserName(), jwtRequest.getPassword());
+			
+		} catch (UsernameNotFoundException ex) {
+			ex.printStackTrace();
+			throw new Exception("User not found ");
+		}
+		
+		
+		UserDetails userDetails = detailServiceImpl.loadUserByUsername(jwtRequest.getUserName());
+		String token = jwtUtils.generateToken(userDetails);
+		System.out.println("TOKEN: "+token);
+		return ResponseEntity.ok(new JwtResponse(token));
 		
 	}
 	
-	@GetMapping("/{username}")
-	public User getUser(@PathVariable("username") String userName) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private void authentificate(String userName, String password) throws Exception {
+		try {
+			
+			manager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
 		
-		User user = userService.findUserByUserName(userName);
-		
-		return user;
+		} catch(DisabledException e) {
+			throw new Exception("User DISABLE");
+		} catch(BadCredentialsException ex) {
+			throw new Exception("Invalid Credentials "+ex.getMessage());
+		}
+				
 	}
-	
-	@DeleteMapping("/{id}")
-	public void deleteUser(@PathVariable("id") Long id) {
-		userService.deleteUser(id);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	@GetMapping("/login")
-//	public String login() {
-//		User user = new User();
-//		
-//		user.setFirstName("Yasha");
-//		user.setLastName("Tyutterin");
-//		user.setEmail("tyutterin_yasha@mail.ru");
-//		user.setPassword("12345");
-//		user.setPhone("+79818837810");
-//		user.setProfile("user");
-//		user.setUserName("yaska1234");
-//		Set<Role> roles = new HashSet<>();
-//		roles.add(roleDao.getOne(1L));
-//		roles.add(roleDao.getOne(2L));
-//		
-//		userService.createUser(user, roles);
-//		
-//		return "redirect:/login";
-//	}
 }

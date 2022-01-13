@@ -16,6 +16,7 @@ import portal.service.UserService;
 @Service
 public class UserServiceImpl implements UserService{
 
+	
 	@Autowired
 	private UserRepository userDao;
 	@Autowired
@@ -26,16 +27,18 @@ public class UserServiceImpl implements UserService{
 	
 	
 	@Override
-	public User createUser(User user) {
+	public User createUser(User user) throws Exception {
 		
 		Optional<User> local = userDao.findByUserName(user.getUserName());
 		if(local.isPresent()) {
-			return null;
+			
+			throw new Exception();
 		}
 		Set<Role> roles = new HashSet<>();
 		roles.add(roleDao.getOne(1L));
 		roles.add(roleDao.getOne(2L));
 		user.setRoles(roles);
+		user.setProfile("default.png");
 		userDao.save(user);
 		return user;
 	}
