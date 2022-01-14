@@ -23,19 +23,10 @@ public class Role {
 	private Long roleId;
 	@Column(name="role_name")
 	private String roleName;
-	@ManyToMany(mappedBy="roles")
-	@JsonIgnore
-	List<User> users;
 	
 	
 	
 	
-	public List<User> getUsers() {
-		return users;
-	}
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
 	public Long getRoleId() {
 		return roleId;
 	}
