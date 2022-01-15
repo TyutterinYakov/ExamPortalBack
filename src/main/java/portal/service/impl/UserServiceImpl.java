@@ -5,10 +5,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import portal.dao.RoleRepository;
 import portal.dao.UserRepository;
+import portal.exception.UserFoundException;
 import portal.model.Role;
 import portal.model.User;
 import portal.service.UserService;
@@ -21,7 +23,8 @@ public class UserServiceImpl implements UserService{
 	private UserRepository userDao;
 	@Autowired
 	private RoleRepository roleDao;
-	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncdoder;
 	
 	
 	
@@ -32,11 +35,12 @@ public class UserServiceImpl implements UserService{
 		Optional<User> local = userDao.findByUserName(user.getUserName());
 		if(local.isPresent()) {
 			
-			throw new Exception();
+			throw new UserFoundException();
 		}
 		Set<Role> roles = new HashSet<>();
-		roles.add(roleDao.getOne(1L));
+//		roles.add(roleDao.getOne(1L));
 		roles.add(roleDao.getOne(2L));
+		user.setPassword(this.passwordEncdoder.encode(user.getPassword()));
 		user.setRoles(roles);
 		user.setProfile("default.png");
 		userDao.save(user);

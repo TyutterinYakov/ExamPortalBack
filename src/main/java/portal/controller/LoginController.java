@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.config.JwtUtils;
+import portal.exception.UserNotFoundException;
 import portal.model.JwtRequest;
 import portal.model.JwtResponse;
 import portal.model.User;
@@ -39,19 +40,16 @@ public class LoginController {
 	@PostMapping("/generate-token")
 	public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception{
 		try {
-			System.out.println(jwtRequest.getPassword());
-			System.out.println(jwtRequest.getUserName());
 			authentificate(jwtRequest.getUserName(), jwtRequest.getPassword());
 			
-		} catch (UsernameNotFoundException ex) {
+		} catch (UserNotFoundException ex) {
 			ex.printStackTrace();
-			throw new Exception("User not found ");
+			throw new Exception("User not found");
 		}
 		
 		
 		UserDetails userDetails = detailServiceImpl.loadUserByUsername(jwtRequest.getUserName());
 		String token = jwtUtils.generateToken(userDetails);
-		System.out.println("TOKEN: "+token);
 		return ResponseEntity.ok(new JwtResponse(token));
 		
 	}

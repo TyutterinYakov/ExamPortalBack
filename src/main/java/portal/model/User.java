@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,16 +34,26 @@ public class User implements UserDetails{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="user_id")
 	private Long userId;
+	@Size(max = 30, min=4, message="Size userName min4 or max30")
+	@NotEmpty
 	@Column(name="user_name", unique=true)
 	private String userName;
 	@Column(name="password")
 	private String password;
+	@Size(max = 30, min=4, message="Size firstName min4 or max30")
+	@NotEmpty
 	@Column(name="first_name")
 	private String firstName;
+	@Size(max = 30, min=4, message="Size lastName min4 or max30")
+	@NotEmpty
 	@Column(name="last_name")
 	private String lastName;
+	@Size(max = 40, min=4, message="Size email min4 or max40")
+	@NotEmpty
 	@Column(name="email")
 	private String email;
+	@Size(max = 15, min=4, message="Size phone min4 or max15")
+	@NotEmpty
 	@Column(name="phone")
 	private String phone;
 	@Column(name="enabled")
