@@ -12,6 +12,6 @@ import portal.model.Quize;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long>{
 
-	Optional<List<Question>> findAllByQuize(Quize quize);
+	Optional<List<Question>> findAllByQuize(Long quizeId);
 
 }

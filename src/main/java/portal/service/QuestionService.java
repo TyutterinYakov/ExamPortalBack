@@ -12,7 +12,7 @@ public interface QuestionService {
 	public Question addQuestion(Question question);
 	public Question updateQuestion(Question question);
 	public void removeQuestion(Long id);
-	public List<Question> getQuestionsOfQuize(Quize quize);
+	public List<Question> getQuestionsOfQuize(Long quizeId);
 	
 	
 }

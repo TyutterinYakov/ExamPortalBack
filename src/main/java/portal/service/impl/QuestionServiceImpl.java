@@ -49,8 +49,8 @@ public class QuestionServiceImpl implements QuestionService{
 	}
 
 	@Override
-	public List<Question> getQuestionsOfQuize(Quize quize) {
-		Optional<List<Question>> questionOpt =  questionDao.findAllByQuize(quize);
+	public List<Question> getQuestionsOfQuize(Long quizeId) {
+		Optional<List<Question>> questionOpt =  questionDao.findAllByQuize(quizeId);
 		if(questionOpt.isPresent()) {
 			return questionOpt.get();
 		}
