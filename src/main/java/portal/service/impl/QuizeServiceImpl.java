@@ -28,6 +28,7 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Override
 	public void removeQuize(Long id) {
+
 		quizeDao.deleteById(id);
 	}
 

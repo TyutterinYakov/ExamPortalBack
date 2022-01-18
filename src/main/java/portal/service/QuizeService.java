@@ -2,7 +2,10 @@ package portal.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import portal.model.Quize;
+
 
 public interface QuizeService {
 	public Quize addQuize(Quize quize);

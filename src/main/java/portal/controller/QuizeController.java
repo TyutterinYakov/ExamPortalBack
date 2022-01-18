@@ -47,7 +47,7 @@ public class QuizeController {
 	}
 	
 	@GetMapping("/")
-	public List<Quize> getAllQuize() {
-		return quizeService.listQuize();
+	public ResponseEntity<List<Quize>> getAllQuize() {
+		return ResponseEntity.ok(quizeService.listQuize());
 	}
 }
