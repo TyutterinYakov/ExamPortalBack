@@ -54,12 +54,10 @@ public class QuestionController {
 	
 	@GetMapping("/quize/{quizeId}")
 	public ResponseEntity<List<Question>> getQuestionOfQuize(@PathVariable("quizeId") Long quizeId){
-		quizeId=(Long)quizeId;
 		return ResponseEntity.ok(questionService.getQuestionsOfQuize(quizeId));
 	}
 	@GetMapping("/quize/all/{quizeId}")
 	public ResponseEntity<List<Question>> getQuestionOfQuizeAdmin(@PathVariable("quizeId") Long quizeId){
-		quizeId=(Long)quizeId;
 		return ResponseEntity.ok(questionService.getQuestionsOfQuize(quizeId));
 	}
 

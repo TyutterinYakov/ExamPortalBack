@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import portal.model.Category;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -49,5 +50,12 @@ public class QuizeController {
 	@GetMapping("/")
 	public ResponseEntity<List<Quize>> getAllQuize() {
 		return ResponseEntity.ok(quizeService.listQuize());
+	}
+	
+	@GetMapping("/category/{categoryId}")
+	public ResponseEntity<List<Quize>> getQuiziesOfCategory(@PathVariable("categoryId") Long id){
+		Category ct = new Category();
+		ct.setCategoryId(id);
+		return quizeService.getQuiziesOfCategory(ct);
 	}
 }

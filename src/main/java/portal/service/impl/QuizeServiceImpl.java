@@ -1,12 +1,15 @@
 package portal.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import portal.dao.QuizeRepository;
+import portal.model.Category;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -44,6 +47,16 @@ public class QuizeServiceImpl implements QuizeService{
 			return quizeOptional.get();
 		}
 		return null;
+	}
+
+	@Override
+	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct) {
+		List<Quize> quizies= new LinkedList<>();
+		Optional<List<Quize>> listOptional = quizeDao.findAllByCategory(ct);
+		if(listOptional.isPresent()) {
+			quizies = listOptional.get();
+		}
+		return ResponseEntity.ok(listOptional.get());
 	}
 
 	
