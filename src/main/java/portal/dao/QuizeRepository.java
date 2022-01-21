@@ -12,6 +12,6 @@ import portal.model.Quize;
 @Repository
 public interface QuizeRepository extends JpaRepository<Quize, Long>{
 
-	Optional<List<Quize>> findAllByCategory(Category ct);
+	Optional<List<Quize>> findAllByCategoryAndActive(Category ct, boolean tr);
 
 }

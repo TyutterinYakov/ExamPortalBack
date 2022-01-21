@@ -52,7 +52,7 @@ public class QuizeServiceImpl implements QuizeService{
 	@Override
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct) {
 		List<Quize> quizies= new LinkedList<>();
-		Optional<List<Quize>> listOptional = quizeDao.findAllByCategory(ct);
+		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(ct, true);
 		if(listOptional.isPresent()) {
 			quizies = listOptional.get();
 		}

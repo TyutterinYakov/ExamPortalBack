@@ -15,4 +15,5 @@ public interface QuestionService {
 	public List<Question> getQuestionsOfQuize(Long quizeId);
 	
 	
+	
 }

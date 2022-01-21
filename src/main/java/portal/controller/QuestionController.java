@@ -1,5 +1,6 @@
 package portal.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,26 @@ public class QuestionController {
 	@GetMapping("/quize/all/{quizeId}")
 	public ResponseEntity<List<Question>> getQuestionOfQuizeAdmin(@PathVariable("quizeId") Long quizeId){
 		return ResponseEntity.ok(questionService.getQuestionsOfQuize(quizeId));
+	}
+	
+	
+	@PostMapping("/eval-quize")
+	public ResponseEntity<List<String>> evalQuize(@RequestBody List<Question> questions){
+		
+		List<String> answerCheck = new LinkedList<>();
+		
+		questions.forEach(q->{
+			Question question = questionService.getQuestion(q.getQuestionId());
+			if(q.getGivenAnswer().trim()==""||q.getGivenAnswer()==null) {
+				answerCheck.add("skip");
+			} 
+			else if(question.getAnswer()!=null||question.getAnswer().trim().equals(q.getGivenAnswer().trim())) { 
+				answerCheck.add("yes");
+			} else {
+				answerCheck.add("no");
+			}
+		});
+		return ResponseEntity.ok(answerCheck);
 	}
 
 }

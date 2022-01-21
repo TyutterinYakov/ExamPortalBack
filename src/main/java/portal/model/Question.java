@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="question")
@@ -24,23 +27,24 @@ public class Question {
 	private String content;
 	@Column(name="image")
 	private String image;
+	@Transient
+	private String givenAnswer;
 	private String option1;
 	private String option2;
 	private String option3;
 	private String option4;
-	
 	private String answer;
-	
-	
-	
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private Quize quize;
+
 	
 	
-	
-	
-	
-	
+	public String getGivenAnswer() {
+		return givenAnswer;
+	}
+	public void setGivenAnswer(String givenAnswer) {
+		this.givenAnswer = givenAnswer;
+	}
 	public String getOption1() {
 		return option1;
 	}
