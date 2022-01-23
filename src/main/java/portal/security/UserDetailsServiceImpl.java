@@ -1,6 +1,5 @@
-package portal.service.impl;
+package portal.security;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,19 +10,28 @@ import org.springframework.stereotype.Service;
 import portal.dao.UserRepository;
 import portal.model.User;
 
-@Service
-public class UserDetailServiceImpl implements UserDetailsService{
 
+@Service("userDetailsServiceImpl")
+public class UserDetailsServiceImpl implements UserDetailsService{
+
+	
+	private final UserRepository userDao;
+	
+	
 	@Autowired
-	private UserRepository userDao; 
+	public UserDetailsServiceImpl(UserRepository userDao) {
+		super();
+		this.userDao = userDao;
+	}
+
+
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> userOptional = userDao.findByUserName(username);
-		if(userOptional.isPresent()) {
-			User user = userOptional.get();
-			return user;
-		}
-		throw new UsernameNotFoundException("No user found "+username);
+		System.out.println(username);
+		User user = userDao.findByUserName(username).orElseThrow(()->
+		new UsernameNotFoundException(username));
+		return user;
 	}
 
 }

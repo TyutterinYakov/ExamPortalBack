@@ -28,9 +28,9 @@ public class Category {
 	private String title;
 	@Column(name="description", length=1000)
 	private String description;
-//	@OneToMany(mappedBy="category", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-//	@JsonIgnore
-//	private Set<Quize> quizies = new LinkedHashSet<>();
+	@OneToMany(mappedBy="category", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@JsonIgnore
+	private Set<Quize> quizies = new LinkedHashSet<>();
 	
 	
 	

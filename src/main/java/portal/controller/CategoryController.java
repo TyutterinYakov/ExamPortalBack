@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,7 @@ public class CategoryController {
 	private CategoryService categoryService;
 	
 	@PostMapping("/")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<Category> addCategory(@RequestBody Category cat) {
 		
 		Category category = categoryService.addCategory(cat);
@@ -37,6 +39,7 @@ public class CategoryController {
 	
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('developers:read')")
 	public Category getCategory(@PathVariable("id") Long id) {
 		
 		return categoryService.getCategory(id);
@@ -48,11 +51,13 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public Category updateCategory(@RequestBody Category category) {
 		return categoryService.updateCategory(category);
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public void removeCategory(@PathVariable("id") Long id) {
 		categoryService.removeCategory(id);
 	}

@@ -1,46 +1,29 @@
 package portal.model;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-
-@Entity
-@Table(name="roles")
-public class Role {
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="role_id")
-	private Long roleId;
-	@Column(name="role_name")
-	private String roleName;
+public enum Role {
 	
+	USER(Set.of(Permission.DEVELOPERS_READ)),
+	ADMIN(Set.of(Permission.DEVELOPER_WRITE, Permission.DEVELOPERS_READ));
 	
-	
-	
-	public Long getRoleId() {
-		return roleId;
+	private final Set<Permission> permissions;
+
+	private Role(Set<Permission> permissions) {
+		this.permissions = permissions;
 	}
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
-	}
-	public String getRoleName() {
-		return roleName;
-	}
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+
+	public Set<Permission> getPermissions() {
+		return permissions;
 	}
 	
-	
-	
+	public Set<SimpleGrantedAuthority> getAuthorities(){
+		return getPermissions().stream()
+				.map(perm -> new SimpleGrantedAuthority(perm.getPermission()))
+				.collect(Collectors.toSet());
+	}
 	
 }

@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,46 +62,15 @@ public class User implements UserDetails{
 	@Column(name="enabled")
 	private boolean enabled=true;
 	private String profile;
-    @ManyToMany (cascade = {
-            CascadeType.PERSIST,
-                    CascadeType.MERGE
-                    
-        }, fetch = FetchType.EAGER)
-	@JoinTable(
-			name="user_role",
-			joinColumns = {@JoinColumn(name="USER_ID", referencedColumnName = "user_id")},
-					inverseJoinColumns = {@JoinColumn(name="ROLE_ID", referencedColumnName="role_id")}
-			)
-    @JsonIgnore
-    private Set<Role> roles = new HashSet<>();
-    
-    
-    
-    
-    
-    
-	public User() {
-		super();
+	@Enumerated(value = EnumType.STRING)
+	private Role role;
+	
+	
+	public Role getRole() {
+		return role;
 	}
-	public User(Long userId, String userName, String password, String firstName, String lastName, String email,
-			String phone, boolean enabled, String profile, Set<Role> roles) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phone = phone;
-		this.enabled = enabled;
-		this.profile = profile;
-		this.roles = roles;
-	}
-	public Set<Role> getRoles() {
-		return roles;
-	}
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	public String getProfile() {
 		return profile;
@@ -155,17 +127,11 @@ public class User implements UserDetails{
 		this.enabled = enabled;
 	}
 	@Override
-	//@JsonIgnore 
-	//TODO
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<Authority> set = new HashSet<>();
 		
-		this.roles.forEach(r->{
-			System.out.println(r.getRoleName());
-			set.add(new Authority(r.getRoleName()));
-		});
+		
 
-		return set;
+		return role.getAuthorities();
 	}
 	@Override
 	public String getUsername() {
@@ -173,16 +139,15 @@ public class User implements UserDetails{
 	}
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
+		return enabled;
 	}
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return enabled;
 	}
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return enabled;
 	}
 	
 	

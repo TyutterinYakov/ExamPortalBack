@@ -3,6 +3,7 @@ package portal.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,14 +29,14 @@ public class UserController {
 	
 	
 	
-	@PostMapping("/")
-	public User createUser(@RequestBody @Valid User user, BindingResult result) throws Exception {
-		if(!result.hasErrors()) {
-		return userService.createUser(user);
-		}
-		throw new Exception();
-		
-	}
+//	@PostMapping("/")
+//	public User createUser(@RequestBody @Valid User user, BindingResult result) throws Exception {
+//		if(!result.hasErrors()) {
+//		return userService.createUser(user);
+//		}
+//		throw new Exception();
+//		
+//	}
 	
 	@GetMapping("/{username}")
 	public User getUser(@PathVariable("username") String userName) {
@@ -46,6 +47,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public void deleteUser(@PathVariable("id") Long id) {
 		userService.deleteUser(id);
 	}

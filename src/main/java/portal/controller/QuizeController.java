@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,31 +29,37 @@ public class QuizeController {
 	
 	
 	@PostMapping("/")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<Quize> addQuize(@RequestBody Quize quize){
 		return ResponseEntity.ok(quizeService.addQuize(quize));
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('developers:read')")
 	public Quize getQuize(@PathVariable Long id) {
 		return quizeService.getQuize(id);
 	}
 	
 	@PutMapping("/")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<Quize> updateQuize(@RequestBody Quize quize){
 		return ResponseEntity.ok(quizeService.updateQuize(quize));
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public void removeQuize(@PathVariable Long id) {
 		quizeService.removeQuize(id);
 	}
 	
 	@GetMapping("/")
+	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<List<Quize>> getAllQuize() {
 		return ResponseEntity.ok(quizeService.listQuize());
 	}
 	
 	@GetMapping("/category/{categoryId}")
+	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(@PathVariable("categoryId") Long id){
 		Category ct = new Category();
 		ct.setCategoryId(id);
