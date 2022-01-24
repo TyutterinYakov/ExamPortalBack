@@ -11,4 +11,6 @@ import portal.model.User;
 public interface UserRepository extends JpaRepository<User, Long>{
 	Optional<User> findByUserName(String name);
 
+	void deleteByUserName(String userName);
+
 }

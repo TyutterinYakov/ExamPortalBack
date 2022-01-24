@@ -31,8 +31,13 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Override
 	public void removeQuize(Long id) {
-
-		quizeDao.deleteById(id);
+		Optional<Quize> quizeOptional = quizeDao.findById(id);
+		System.out.println("0------------------- "+id);
+		if(quizeOptional.isPresent()) {
+			System.out.println("0------------------- "+id);
+			quizeDao.delete(quizeOptional.get());
+		}
+		
 	}
 
 	@Override

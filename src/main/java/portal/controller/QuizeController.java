@@ -49,6 +49,7 @@ public class QuizeController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public void removeQuize(@PathVariable Long id) {
+		
 		quizeService.removeQuize(id);
 	}
 	

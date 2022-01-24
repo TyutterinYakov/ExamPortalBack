@@ -9,7 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import portal.dao.UserRepository;
+import portal.exception.NotPermissionException;
 import portal.exception.UserFoundException;
+import portal.exception.UserNotFoundException;
 import portal.model.Role;
 import portal.model.User;
 import portal.service.UserService;
@@ -23,29 +25,25 @@ public class UserServiceImpl implements UserService{
 	
 	
 	
-//	@Bean
-//	public PasswordEncoder passwordEncoder()
-//	{
-//	    return new BCryptPasswordEncoder();
-//	}
-//	
-//	
-//	
-//	
-//	@Override
-//	public User createUser(User user) throws Exception {
-//		
-//		Optional<User> local = userDao.findByUserName(user.getUserName());
-//		if(local.isPresent()) {
-//			
-//			throw new UserFoundException();
-//		}
-//		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
-//		user.setRole(Role.ADMIN);
-//		user.setProfile("default.png");
-//		userDao.save(user);
-//		return user;
-//	}
+	public PasswordEncoder passwordEncoder()
+	{
+	    return new BCryptPasswordEncoder();
+	}
+	
+	@Override
+	public User createUser(User user) throws Exception {
+		
+		Optional<User> local = userDao.findByUserName(user.getUserName());
+		if(local.isPresent()) {
+			
+			throw new UserFoundException();
+		}
+		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
+		user.setRole(Role.ADMIN);
+		user.setProfile("default.png");
+		userDao.save(user);
+		return user;
+	}
 
 	@Override
 	public User findUserByUserName(String userName){
@@ -57,8 +55,35 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void deleteUser(Long id) {
-		userDao.deleteById(id);
+	public void deleteUser(String userName) {
+		Optional<User> userOptional = userDao.findByUserName(userName);
+		if(userOptional.isPresent()) {
+			userDao.deleteById(userOptional.get().getUserId());
+		}
+	}
+
+	@Override
+	public User updateUser(String name, User user) throws NotPermissionException, UserNotFoundException {
+		
+//		Optional<User> userOptional = userDao.findByUserName(name);
+//		if(userOptional.isPresent()) {
+//			if(!name.equals(user.getUserName())) {
+//				throw new NotPermissionException();
+//			}
+//			User us = userOptional.get();
+//			us=user;
+//			us.setFirstName(user.getFirstName());
+//			us.setLastName(user.getLastName());
+//			us.setPhone(user.getPhone());
+//			us.setEmail(user.getEmail());
+//			
+//			System.out.println("4334342423432243432324423423234234234432");
+//			userDao.save(us);
+//			
+//			return us;
+//		}
+//		throw new UserNotFoundException();
+		return null;
 	}
 
 }
