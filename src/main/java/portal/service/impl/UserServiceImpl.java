@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
 			throw new UserFoundException();
 		}
 		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
-		user.setRole(Role.ADMIN);
+		user.setRole(Role.USER);
 		user.setProfile("default.png");
 		userDao.save(user);
 		return user;
@@ -65,25 +65,23 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User updateUser(String name, User user) throws NotPermissionException, UserNotFoundException {
 		
-//		Optional<User> userOptional = userDao.findByUserName(name);
-//		if(userOptional.isPresent()) {
-//			if(!name.equals(user.getUserName())) {
-//				throw new NotPermissionException();
-//			}
-//			User us = userOptional.get();
-//			us=user;
-//			us.setFirstName(user.getFirstName());
-//			us.setLastName(user.getLastName());
-//			us.setPhone(user.getPhone());
-//			us.setEmail(user.getEmail());
-//			
-//			System.out.println("4334342423432243432324423423234234234432");
-//			userDao.save(us);
-//			
-//			return us;
-//		}
-//		throw new UserNotFoundException();
-		return null;
+		Optional<User> userOptional = userDao.findByUserName(name);
+		if(userOptional.isPresent()) {
+			if(!name.equals(user.getUserName())) {
+				throw new NotPermissionException();
+			}
+			User us = userOptional.get();
+			us=user;
+			us.setFirstName(user.getFirstName());
+			us.setLastName(user.getLastName());
+			us.setPhone(user.getPhone());
+			us.setEmail(user.getEmail());
+			
+			userDao.save(us);
+			
+			return us;
+		}
+		throw new UserNotFoundException();
 	}
 
 }

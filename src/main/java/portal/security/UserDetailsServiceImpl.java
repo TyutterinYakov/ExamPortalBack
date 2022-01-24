@@ -24,6 +24,12 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		this.userDao = userDao;
 	}
 
+	public User getUser(String name) {
+		loadUserByUsername(name);
+		User user = userDao.findByUserName(name).orElseThrow(()->
+		new UsernameNotFoundException(name));
+		return user;
+	}
 
 
 	@Override
@@ -31,7 +37,8 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		System.out.println(username);
 		User user = userDao.findByUserName(username).orElseThrow(()->
 		new UsernameNotFoundException(username));
-		return user;
+		return SecurityUser.fromUser(user);
 	}
+
 
 }

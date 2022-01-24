@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="users")
-public class User implements UserDetails{
+public class User{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="user_id")
@@ -125,27 +125,6 @@ public class User implements UserDetails{
 	}
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return role.getAuthorities();
-	}
-	@Override
-	public String getUsername() {
-		return this.userName;
-	}
-	@Override
-	public boolean isAccountNonExpired() {
-		return enabled;
-	}
-	@Override
-	public boolean isAccountNonLocked() {
-		return enabled;
-	}
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return enabled;
 	}
 	
 	

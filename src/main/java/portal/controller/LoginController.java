@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ import portal.exception.UserNotFoundException;
 import portal.model.JwtRequest;
 import portal.model.User;
 import portal.security.JwtTokenProvider;
+import portal.security.SecurityUser;
 import portal.security.UserDetailsServiceImpl;
 import portal.service.UserService;
 
@@ -75,6 +77,6 @@ public class LoginController {
 	
 	@GetMapping("/current-user")
 	public User getCurrentUser(Principal principal) {
-		return (User)userDetailsService.loadUserByUsername(principal.getName());
+		return userDetailsService.getUser(principal.getName());
 	}
 }
