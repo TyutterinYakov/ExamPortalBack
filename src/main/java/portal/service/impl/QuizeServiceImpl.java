@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import portal.dao.ExamResultRepository;
 import portal.dao.QuizeRepository;
 import portal.model.Category;
+import portal.model.ExamResult;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -18,6 +20,9 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Autowired
 	private QuizeRepository quizeDao;
+	
+	@Autowired
+	private ExamResultRepository examResultDao;
 	
 	@Override
 	public Quize addQuize(Quize quize) {
@@ -62,6 +67,14 @@ public class QuizeServiceImpl implements QuizeService{
 			quizies = listOptional.get();
 		}
 		return ResponseEntity.ok(listOptional.get());
+	}
+
+	@Override
+	public ResponseEntity<List<ExamResult>> getAllResultFromQuize(Long id) {
+		
+		List<ExamResult> results = examResultDao.findAllByQuizeId(id);
+		
+		return ResponseEntity.ok(results);
 	}
 
 	

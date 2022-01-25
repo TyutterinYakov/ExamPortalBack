@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.model.Category;
+import portal.model.ExamResult;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -66,4 +67,12 @@ public class QuizeController {
 		ct.setCategoryId(id);
 		return quizeService.getQuiziesOfCategory(ct);
 	}
+	
+	@GetMapping("/statistic/{quizeId}")
+	@PreAuthorize("hasAuthority('developers:write')")
+	public ResponseEntity<List<ExamResult>> getAllExamResultFromQuize(@PathVariable("quizeId") Long id){
+		System.out.println(id);
+		return quizeService.getAllResultFromQuize(id);
+	}
+	
 }
