@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import portal.dao.ExamResultRepository;
+import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
 import portal.model.Category;
 import portal.model.ExamResult;
+import portal.model.Question;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -23,23 +25,31 @@ public class QuizeServiceImpl implements QuizeService{
 	
 	@Autowired
 	private ExamResultRepository examResultDao;
+	@Autowired
+	private QuestionRepository questionDao;
+	
 	
 	@Override
 	public Quize addQuize(Quize quize) {
+		quize.setCountOfQuestion(0); 
 		return quizeDao.save(quize);
 	}
 
 	@Override
 	public Quize updateQuize(Quize quize) {
+		Optional<List<Question>> question = questionDao.findAllByQuize(quize);
+		if(question.isPresent()) {
+			quize.setCountOfQuestion(question.get().size());  //Подсчет вопросов при обновлении теста
+		} else {
+			quize.setCountOfQuestion(0);
+		}
 		return quizeDao.save(quize);
 	}
 
 	@Override
 	public void removeQuize(Long id) {
 		Optional<Quize> quizeOptional = quizeDao.findById(id);
-		System.out.println("0------------------- "+id);
 		if(quizeOptional.isPresent()) {
-			System.out.println("0------------------- "+id);
 			quizeDao.delete(quizeOptional.get());
 		}
 		
@@ -72,9 +82,12 @@ public class QuizeServiceImpl implements QuizeService{
 	@Override
 	public ResponseEntity<List<ExamResult>> getAllResultFromQuize(Long id) {
 		
-		List<ExamResult> results = examResultDao.findAllByQuizeId(id);
+		Quize quize = new Quize();
+		quize.setQuizeId(id);
+		List<ExamResult> results = examResultDao.findAllByQuize(quize);
 		
 		return ResponseEntity.ok(results);
+//		return null;
 	}
 
 	

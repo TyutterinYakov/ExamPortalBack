@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,59 +32,45 @@ public class ExamResult {
 	private int invalidQuestion;
 	private int skipQuestion;
 	private int countPoints;
-    @ManyToMany (cascade = {
-            CascadeType.PERSIST,
-                    CascadeType.MERGE
-                    
-        })
-	@JoinTable(
-			name="answer_user",
-			joinColumns = {@JoinColumn(name="answer", referencedColumnName = "answer_id")},
-					inverseJoinColumns = {@JoinColumn(name="user_ids", referencedColumnName="user_id")}
-			)
-    @JsonIgnore
-    private List<User> users = new LinkedList<>();
-    
-    @ManyToMany (cascade = {
-            CascadeType.PERSIST,
-                    CascadeType.MERGE
-                    
-        })
-	@JoinTable(
-			name="answer_quize",
-			joinColumns = {@JoinColumn(name="answer", referencedColumnName = "answer_id")},
-					inverseJoinColumns = {@JoinColumn(name="quize", referencedColumnName="quize_id")}
-			)
-    @JsonIgnore
-    private List<Quize> quizies = new LinkedList<>();
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private User user;
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Quize quize;
 	
 	
 	public Long getAnswerId() {
 		return answerId;
 	}
 	
-	
-	public List<User> getUsers() {
-		return users;
+
+
+
+	public User getUser() {
+		return user;
 	}
 
 
-	public void setUsers(List<User> users) {
-		this.users = users;
+
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 
 
 
-
-	public List<Quize> getQuizies() {
-		return quizies;
+	public Quize getQuize() {
+		return quize;
 	}
 
 
-	public void setQuizies(List<Quize> quizies) {
-		this.quizies = quizies;
+
+
+	public void setQuize(Quize quize) {
+		this.quize = quize;
 	}
+
+
 
 
 	public void setAnswerId(Long answerId) {

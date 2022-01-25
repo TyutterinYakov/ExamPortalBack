@@ -1,9 +1,11 @@
 package portal.controller;
 
+import java.security.Principal;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import portal.exception.UserNotFoundException;
+import portal.model.ExamResult;
 import portal.model.Question;
 import portal.service.QuestionService;
 
@@ -73,22 +77,9 @@ public class QuestionController {
 	
 	@PostMapping("/eval-quize")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<List<String>> evalQuize(@RequestBody List<Question> questions){
+	public ResponseEntity<ExamResult> evalQuize(@RequestBody List<Question> questions, Principal principal) throws UserNotFoundException, NotFoundException{
 		
-		List<String> answerCheck = new LinkedList<>();
-		
-		questions.forEach(q->{
-			Question question = questionService.getQuestion(q.getQuestionId());
-			if(q.getGivenAnswer().trim()==""||q.getGivenAnswer()==null) {
-				answerCheck.add("skip");
-			} 
-			else if(question.getAnswer()!=null||question.getAnswer().trim().equals(q.getGivenAnswer().trim())) { 
-				answerCheck.add("yes");
-			} else {
-				answerCheck.add("no");
-			}
-		});
-		return ResponseEntity.ok(answerCheck);
+		return ResponseEntity.ok(questionService.getExamResult(principal.getName(), questions));
 	}
 
 }
