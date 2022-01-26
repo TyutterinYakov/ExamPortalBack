@@ -1,7 +1,6 @@
 package portal.controller;
 
 import java.security.Principal;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -29,7 +28,7 @@ import portal.service.QuestionService;
 
 @RequestMapping("/question")
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class QuestionController {
 	
 	@Autowired

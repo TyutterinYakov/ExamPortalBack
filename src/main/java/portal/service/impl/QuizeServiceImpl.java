@@ -1,6 +1,5 @@
 package portal.service.impl;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +10,13 @@ import org.springframework.stereotype.Service;
 import portal.dao.ExamResultRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
+import portal.dao.UserRepository;
+import portal.exception.UserNotFoundException;
 import portal.model.Category;
 import portal.model.ExamResult;
 import portal.model.Question;
 import portal.model.Quize;
+import portal.model.User;
 import portal.service.QuizeService;
 
 @Service
@@ -27,6 +29,8 @@ public class QuizeServiceImpl implements QuizeService{
 	private ExamResultRepository examResultDao;
 	@Autowired
 	private QuestionRepository questionDao;
+	@Autowired
+	private UserRepository userDao;
 	
 	
 	@Override
@@ -71,12 +75,11 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Override
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct) {
-		List<Quize> quizies= new LinkedList<>();
 		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(ct, true);
 		if(listOptional.isPresent()) {
-			quizies = listOptional.get();
+			List<Quize> quizies = listOptional.get();
 		}
-		return ResponseEntity.ok(listOptional.get());
+		return ResponseEntity.ok(listOptional.get());  //TODO
 	}
 
 	@Override
@@ -87,7 +90,24 @@ public class QuizeServiceImpl implements QuizeService{
 		List<ExamResult> results = examResultDao.findAllByQuize(quize);
 		
 		return ResponseEntity.ok(results);
-//		return null;
+	}
+
+	@Override
+	public ResponseEntity<List<ExamResult>> checkUserResultExam(String name, Long id) throws UserNotFoundException {
+		
+		User user = userDao.findByUserName(name).orElseThrow(()->
+			new UserNotFoundException("Проверка на прохождение теста! Пользователь не найден")
+		);
+		Quize quize = new Quize();
+		quize.setQuizeId(id);
+		
+		return ResponseEntity.ok(examResultDao.findAllByUserAndQuize(user, quize));
+	}
+
+	@Override
+	public void removeExamResult(Long id) {
+		examResultDao.deleteById(id);
+		
 	}
 
 	

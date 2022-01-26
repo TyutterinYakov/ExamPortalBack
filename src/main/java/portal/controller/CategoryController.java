@@ -25,7 +25,7 @@ import portal.service.CategoryService;
 
 @RestController
 @RequestMapping("/category")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class CategoryController {
 
 	

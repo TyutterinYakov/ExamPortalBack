@@ -7,7 +7,6 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
-import portal.model.Quize;
 
 public interface QuestionService {
 	

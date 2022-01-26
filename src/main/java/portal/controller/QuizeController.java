@@ -1,5 +1,6 @@
 package portal.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -19,13 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
+import portal.exception.UserNotFoundException;
 import portal.model.Category;
 import portal.model.ExamResult;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/quize")
 public class QuizeController {
 	
@@ -82,8 +84,19 @@ public class QuizeController {
 	@GetMapping("/statistic/{quizeId}")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<List<ExamResult>> getAllExamResultFromQuize(@PathVariable("quizeId") Long id){
-		System.out.println(id);
 		return quizeService.getAllResultFromQuize(id);
+	}
+	
+	@GetMapping("/checkUserResult/{quizeId}")
+	@PreAuthorize("hasAuthority('developers:read')")
+	public ResponseEntity<List<ExamResult>> checkUserResult(@PathVariable("quizeId") Long id, Principal principal) throws UserNotFoundException{
+		return quizeService.checkUserResultExam(principal.getName(), id);
+	}
+	
+	@DeleteMapping("/examResult/{answerId}")
+	@PreAuthorize("hasAuthority('developers:write')")
+	public void deleteUserResult(@PathVariable("answerId") Long id){
+		quizeService.removeExamResult(id);
 	}
 	
 }
