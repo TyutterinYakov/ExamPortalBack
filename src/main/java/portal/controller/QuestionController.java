@@ -4,10 +4,13 @@ import java.security.Principal;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import portal.exception.InvalidDataException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
@@ -47,14 +51,20 @@ public class QuestionController {
 	
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Question> addQuestion(@RequestBody Question question){
-		return ResponseEntity.ok(questionService.addQuestion(question));
+	public ResponseEntity<Question> addQuestion(@RequestBody @Valid Question question, BindingResult result) throws InvalidDataException{
+		if(!result.hasErrors()) {
+			return ResponseEntity.ok(questionService.addQuestion(question));
+		}
+		throw new InvalidDataException("Ошибка при вводе данных вопроса");
 	}
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Question> updateQuestion(@RequestBody Question question){
-		return ResponseEntity.ok(questionService.updateQuestion(question));
+	public ResponseEntity<Question> updateQuestion(@RequestBody @Valid Question question, BindingResult result) throws InvalidDataException{
+		if(!result.hasErrors()) {
+			return ResponseEntity.ok(questionService.updateQuestion(question));
+		}
+		throw new InvalidDataException("Ошибка при вводе данных вопроса");
 	}
 	
 	@DeleteMapping("/{id}")

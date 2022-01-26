@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,17 +26,21 @@ public class Question {
 	@Column(name="question_id")
 	private Long questionId;
 	@Column(name="content", length=4000)
+	@NotEmpty
 	private String content;
 	@Column(name="image")
 	private String image;
 	@Transient
 	private String givenAnswer;
+	@NotEmpty
 	private String option1;
+	@NotEmpty
 	private String option2;
 	private String option3;
 	private String option4;
 	private String answer;
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
+	@NotNull
 	private Quize quize;
 
 	

@@ -1,5 +1,6 @@
 package portal.model;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -12,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,20 +22,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="category")
 public class Category {
 
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="category_id")
 	private Long categoryId;
+	@NotEmpty
 	@Column(name="title")
 	private String title;
 	@Column(name="description", length=1000)
+	@NotEmpty
 	private String description;
-//	@OneToMany(mappedBy="category", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
-//	@JsonIgnore
-//	private Set<Quize> quizies = new LinkedHashSet<>();
+	@OneToMany(mappedBy="category", fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+	@JsonIgnore
+	private Set<Quize> quizies = new HashSet<>();
 	
 	
+	public Set<Quize> getQuizies() {
+		return quizies;
+	}
+	public void setQuizies(Set<Quize> quizies) {
+		this.quizies = quizies;
+	}
 	public Long getCategoryId() {
 		return categoryId;
 	}
@@ -51,8 +61,5 @@ public class Category {
 	public void setDescription(String description) {
 		this.description = description;
 	} 
-	
-	
-	
 	
 }

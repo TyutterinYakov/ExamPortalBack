@@ -13,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -25,16 +28,21 @@ public class Quize {
 	@Column(name="quize_id")
 	private Long quizeId;
 	@Column(name="title")
+	@NotEmpty
 	private String title;
 	@Column(name="description", length=1000)
+	@NotEmpty
 	private String description;
 	@Column(name="active")
 	private boolean active=false;
+	@NotNull
 	@Column(name="max_marks")
 	private int maxMarks;
 	@Column(name="count_of_question")
 	private int countOfQuestion;
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
+	@NotNull
+	@Valid
 	private Category category;
 	@OneToMany(mappedBy="quize", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JsonIgnore

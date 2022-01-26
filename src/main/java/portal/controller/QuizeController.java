@@ -2,9 +2,12 @@ package portal.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import portal.exception.InvalidDataException;
 import portal.model.Category;
 import portal.model.ExamResult;
 import portal.model.Quize;
@@ -31,8 +35,11 @@ public class QuizeController {
 	
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Quize> addQuize(@RequestBody Quize quize){
-		return ResponseEntity.ok(quizeService.addQuize(quize));
+	public ResponseEntity<Quize> addQuize(@RequestBody @Valid Quize quize, BindingResult result) throws InvalidDataException{
+		if(!result.hasErrors()) {
+			return ResponseEntity.ok(quizeService.addQuize(quize));
+		}
+		throw new InvalidDataException("Ошибка при вводе данных теста");
 	}
 	
 	@GetMapping("/{id}")
@@ -43,8 +50,12 @@ public class QuizeController {
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Quize> updateQuize(@RequestBody Quize quize){
-		return ResponseEntity.ok(quizeService.updateQuize(quize));
+	public ResponseEntity<Quize> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) throws InvalidDataException{
+		if(!result.hasErrors()) {
+			return ResponseEntity.ok(quizeService.updateQuize(quize));
+		}
+		
+		throw new InvalidDataException("Ошибка при вводе данных теста");
 	}
 	
 	@DeleteMapping("/{id}")
