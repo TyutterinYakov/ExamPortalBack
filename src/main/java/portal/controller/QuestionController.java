@@ -84,11 +84,5 @@ public class QuestionController {
 	}
 	
 	
-	@PostMapping("/eval-quize")
-	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<ExamResult> evalQuize(@RequestBody List<Question> questions, Principal principal) throws UserNotFoundException, NotFoundException{
-		
-		return ResponseEntity.ok(questionService.getExamResult(principal.getName(), questions));
-	}
 
 }

@@ -43,7 +43,7 @@ public class UserController {
 	}
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<?> updateQuestion(Principal principal, @RequestBody @Valid User user, BindingResult result) throws NotPermissionException, UserNotFoundException, InvalidDataException{
+	public ResponseEntity<?> updateUserProfile(Principal principal, @RequestBody @Valid User user, BindingResult result) throws NotPermissionException, UserNotFoundException, InvalidDataException{
 		if(!result.hasErrors()) {
 			return ResponseEntity.ok(userService.updateUser(principal.getName(),user));
 		}
@@ -51,14 +51,6 @@ public class UserController {
 	}
 	
 	
-//	@GetMapping("/")
-//	@PreAuthorize("hasAuthority('developers:read')")
-//	public User getUser(Principal principal) {
-//		
-//		User user = userService.findUserByUserName(principal.getName());
-//		
-//		return user;
-//	}
 	
 	@DeleteMapping("/")
 	@PreAuthorize("hasAuthority('developers:read')")

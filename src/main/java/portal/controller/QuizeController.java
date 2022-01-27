@@ -81,22 +81,6 @@ public class QuizeController {
 		return quizeService.getQuiziesOfCategory(ct);
 	}
 	
-	@GetMapping("/statistic/{quizeId}")
-	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<List<ExamResult>> getAllExamResultFromQuize(@PathVariable("quizeId") Long id){
-		return quizeService.getAllResultFromQuize(id);
-	}
-	
-	@GetMapping("/checkUserResult/{quizeId}")
-	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<List<ExamResult>> checkUserResult(@PathVariable("quizeId") Long id, Principal principal) throws UserNotFoundException{
-		return quizeService.checkUserResultExam(principal.getName(), id);
-	}
-	
-	@DeleteMapping("/examResult/{answerId}")
-	@PreAuthorize("hasAuthority('developers:write')")
-	public void deleteUserResult(@PathVariable("answerId") Long id){
-		quizeService.removeExamResult(id);
-	}
+
 	
 }

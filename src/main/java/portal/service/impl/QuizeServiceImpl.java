@@ -1,5 +1,6 @@
 package portal.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +25,8 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Autowired
 	private QuizeRepository quizeDao;
-	
-	@Autowired
-	private ExamResultRepository examResultDao;
 	@Autowired
 	private QuestionRepository questionDao;
-	@Autowired
-	private UserRepository userDao;
-	
 	
 	@Override
 	public Quize addQuize(Quize quize) {
@@ -70,46 +65,20 @@ public class QuizeServiceImpl implements QuizeService{
 		if(quizeOptional.isPresent()) {
 			return quizeOptional.get();
 		}
-		return null;
+		return new Quize();
 	}
 
 	@Override
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct) {
+		List<Quize> quizies = new LinkedList<>();
 		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(ct, true);
 		if(listOptional.isPresent()) {
-			List<Quize> quizies = listOptional.get();
+			quizies = listOptional.get();
 		}
-		return ResponseEntity.ok(listOptional.get());  //TODO
+		return ResponseEntity.ok(quizies);
 	}
 
-	@Override
-	public ResponseEntity<List<ExamResult>> getAllResultFromQuize(Long id) {
 		
-		Quize quize = new Quize();
-		quize.setQuizeId(id);
-		List<ExamResult> results = examResultDao.findAllByQuize(quize);
-		
-		return ResponseEntity.ok(results);
-	}
-
-	@Override
-	public ResponseEntity<List<ExamResult>> checkUserResultExam(String name, Long id) throws UserNotFoundException {
-		
-		User user = userDao.findByUserName(name).orElseThrow(()->
-			new UserNotFoundException("Проверка на прохождение теста! Пользователь не найден")
-		);
-		Quize quize = new Quize();
-		quize.setQuizeId(id);
-		
-		return ResponseEntity.ok(examResultDao.findAllByUserAndQuize(user, quize));
-	}
-
-	@Override
-	public void removeExamResult(Long id) {
-		examResultDao.deleteById(id);
-		
-	}
-
 	
 	
 }

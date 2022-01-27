@@ -16,7 +16,6 @@ public interface QuestionService {
 	public Question updateQuestion(Question question);
 	public void removeQuestion(Long id);
 	public List<Question> getQuestionsOfQuize(Long quizeId);
-	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, NotFoundException;
 	
 	
 	

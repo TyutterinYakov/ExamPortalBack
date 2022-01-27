@@ -27,43 +27,27 @@ import portal.model.User;
 import portal.security.JwtTokenProvider;
 import portal.security.UserDetailsServiceImpl;
 import portal.service.UserService;
+import portal.service.impl.LoginServiceImpl;
 
 @RestController
 @RequestMapping
 @CrossOrigin(origins = "http://localhost:4200/")
 public class LoginController {
 	
-	private final AuthenticationManager authManager;
-	private UserService userService;
-	private JwtTokenProvider jwtProvider;
+
 	private UserDetailsServiceImpl userDetailsService;
+	private LoginServiceImpl loginService;
 	
 	
-	public LoginController(AuthenticationManager authManager, UserService userService, JwtTokenProvider jwtProvider, UserDetailsServiceImpl userDetailsService) {
+	public LoginController(UserDetailsServiceImpl userDetailsService, LoginServiceImpl loginService) {
 		super();
-		this.authManager = authManager;
-		this.userService = userService;
-		this.jwtProvider = jwtProvider;
 		this.userDetailsService = userDetailsService;
+		this.loginService=loginService;
 	}
 
 	@PostMapping("/generate-token")
 	public ResponseEntity<?> authenticate(@RequestBody JwtRequest request) throws UserNotFoundException{
-		try {
-			authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
-			User user = userService.findUserByUserName(request.getUserName());
-			if(user==null) {
-				throw new UserNotFoundException("Usent doesnt exists");
-			}
-			String token = jwtProvider.createToken(request.getUserName(), user.getRole().name());
-			Map<Object, Object> response = new HashMap<>();
-			response.put("username", request.getUserName());
-			response.put("token", token);
-			
-			return ResponseEntity.ok(response);
-		} catch(AuthenticationException ex) {
-			return new ResponseEntity<>("Invalid email/password or all", HttpStatus.FORBIDDEN);
-		}
+		return loginService.getAuthenticate(request);
 	}
 	
 	@PostMapping("/logout")

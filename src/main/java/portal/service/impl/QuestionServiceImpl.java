@@ -90,35 +90,5 @@ public class QuestionServiceImpl implements QuestionService{
 		return new LinkedList<Question>();
 	}
 
-	@Override
-	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, NotFoundException {
-		int validQuestion=0;
-		int invalidQuestion=0;
-		int skipQuestion=0;
-		Quize quize = questions.get(0).getQuize();
-		for(Question q: questions){
-			Question question = questionDao.findById(q.getQuestionId()).orElseThrow(()->new NotFoundException());
-			if(q.getGivenAnswer().trim()==""||q.getGivenAnswer()==null) {
-				++skipQuestion;
-			} 
-			else if(question.getAnswer()!=null&&question.getAnswer().trim().equals(q.getGivenAnswer().trim())) { 
-				++validQuestion;
-			} else {
-				++invalidQuestion;
-			}
-		}
-		ExamResult result = new ExamResult();
-		result.setInvalidQuestion(invalidQuestion);
-		result.setSkipQuestion(skipQuestion);
-		result.setValidQustion(validQuestion);
-		result.setCountPoints(validQuestion*quize.getMaxMarks()/quize.getCountOfQuestion()); 
-		User user = userDao.findByUserName(name).orElseThrow(()->
-			new UserNotFoundException("Результат теста не записан! Пользователь не найден"));
-		result.setUser(user);
-		result.setQuize(quize);
-		examDao.save(result);
-		
-		return result;
-	}
 
 }
