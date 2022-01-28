@@ -1,6 +1,8 @@
 package portal.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -63,8 +65,11 @@ public class ExamResultServiceImpl implements ExamResultService {
 		int validQuestion=0;
 		int invalidQuestion=0;
 		int skipQuestion=0;
+		
+		Map<String, Map<String, String>> allExamResult = new HashMap<>();
 		Quize quize = questions.get(0).getQuize();
 		for(Question q: questions){
+			Map<String, String> givenAndAnswer = new HashMap<>();
 			Question question = questionDao.findById(q.getQuestionId()).orElseThrow(()->new NotFoundException());
 			if(q.getGivenAnswer().trim()==""||q.getGivenAnswer()==null) {
 				++skipQuestion;
@@ -74,6 +79,10 @@ public class ExamResultServiceImpl implements ExamResultService {
 			} else {
 				++invalidQuestion;
 			}
+			givenAndAnswer.put(q.getGivenAnswer(), q.getAnswer());
+			allExamResult.put(q.getContent(), givenAndAnswer);
+			
+			
 		}
 		ExamResult result = new ExamResult();
 		result.setInvalidQuestion(invalidQuestion);
@@ -84,6 +93,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 			new UserNotFoundException("Результат теста не записан! Пользователь не найден"));
 		result.setUser(user);
 		result.setQuize(quize);
+		result.setQuestionsAndGivenAnswer(allExamResult);
 		examResultDao.save(result);
 		
 		return result;

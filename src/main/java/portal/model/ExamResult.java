@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,6 +20,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import portal.util.HashMapConverter;
 
 
 @Entity
@@ -37,6 +40,24 @@ public class ExamResult {
     private User user;
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Quize quize;
+    @Convert(converter = HashMapConverter.class)
+    private Map<String, Map<String, String>> questionsAndGivenAnswer; //Map<id  теста Map<Ответ, который дан; Правильный ответ>
+    
+   
+
+
+	public Map<String, Map<String, String>> getQuestionsAndGivenAnswer() {
+		return questionsAndGivenAnswer;
+	}
+
+
+
+
+	public void setQuestionsAndGivenAnswer(Map<String, Map<String, String>> questionsAndGivenAnswer) {
+		this.questionsAndGivenAnswer = questionsAndGivenAnswer;
+	}
+
+
 
 
 	public Long getAnswerId() {
