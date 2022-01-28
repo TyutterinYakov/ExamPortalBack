@@ -1,8 +1,13 @@
 package portal.model;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,6 +15,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Entity
@@ -28,8 +37,8 @@ public class ExamResult {
     private User user;
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Quize quize;
-	
-	
+
+
 	public Long getAnswerId() {
 		return answerId;
 	}
