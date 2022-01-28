@@ -1,12 +1,10 @@
 package portal.controller;
 
-import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
-import portal.exception.UserNotFoundException;
-import portal.model.ExamResult;
 import portal.model.Question;
 import portal.service.QuestionService;
 

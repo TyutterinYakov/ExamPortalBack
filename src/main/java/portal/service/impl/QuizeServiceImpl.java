@@ -8,16 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import portal.dao.ExamResultRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
-import portal.dao.UserRepository;
-import portal.exception.UserNotFoundException;
 import portal.model.Category;
-import portal.model.ExamResult;
 import portal.model.Question;
 import portal.model.Quize;
-import portal.model.User;
 import portal.service.QuizeService;
 
 @Service

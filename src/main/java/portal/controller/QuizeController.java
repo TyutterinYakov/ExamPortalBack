@@ -1,6 +1,5 @@
 package portal.controller;
 
-import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -20,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
-import portal.exception.UserNotFoundException;
 import portal.model.Category;
-import portal.model.ExamResult;
 import portal.model.Quize;
 import portal.service.QuizeService;
 

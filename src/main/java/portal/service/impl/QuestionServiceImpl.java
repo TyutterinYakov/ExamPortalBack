@@ -6,34 +6,28 @@ import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import portal.dao.ExamResultRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
-import portal.dao.UserRepository;
-import portal.exception.UserNotFoundException;
-import portal.model.ExamResult;
 import portal.model.Question;
 import portal.model.Quize;
-import portal.model.User;
 import portal.service.QuestionService;
 
 @Service
 public class QuestionServiceImpl implements QuestionService{
 
 	
-	@Autowired
 	private QuestionRepository questionDao;
-	@Autowired
 	private QuizeRepository quizeDao;
-	@Autowired
-	private ExamResultRepository examDao;
-	@Autowired
-	private UserRepository userDao;
 	
-	
+	@Autowired
+	public QuestionServiceImpl(QuestionRepository questionDao, QuizeRepository quizeDao) {
+		super();
+		this.questionDao = questionDao;
+		this.quizeDao = quizeDao;
+	}
+
 	@Override
 	public Question getQuestion(Long id) {
 		Optional<Question> questionOpt = questionDao.findById(id);

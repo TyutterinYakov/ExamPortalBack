@@ -1,9 +1,8 @@
 package portal.model;
 
-import java.util.Collection;
-import java.util.HashSet;
+
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,19 +13,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 
@@ -43,11 +36,11 @@ public class User{
 	private String userName;
 	@Column(name="password")
 	private String password;
-	@Size(max = 30, min=4, message="Size firstName min4 or max30")
+	@Size(max = 30, min=2, message="Size firstName min4 or max30")
 	@NotEmpty
 	@Column(name="first_name")
 	private String firstName;
-	@Size(max = 30, min=4, message="Size lastName min4 or max30")
+	@Size(max = 30, min=2, message="Size lastName min4 or max30")
 	@NotEmpty
 	@Column(name="last_name")
 	private String lastName;
@@ -64,8 +57,19 @@ public class User{
 	private String profile;
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+	@JsonIgnore
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
+	private List<ExamResult> results = new LinkedList<>();
 	
 	
+	
+	
+	public List<ExamResult> getResults() {
+		return results;
+	}
+	public void setResults(List<ExamResult> results) {
+		this.results = results;
+	}
 	public Role getRole() {
 		return role;
 	}

@@ -55,6 +55,7 @@ public class UserController {
 	@DeleteMapping("/")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public void deleteUser(Principal principal) {
+	
 		userService.deleteUser(principal.getName());
 	}
 	

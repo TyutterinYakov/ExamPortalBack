@@ -104,7 +104,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 		User user = userDao.findByUserName(name).orElseThrow(()->
 		new UserNotFoundException("Пользователь не найден при поиске результатов теста"));
 		
-		return ResponseEntity.ok(examResultDao.findAllByUser(user));
+		return ResponseEntity.ok(user.getResults());
 	}
 
 }

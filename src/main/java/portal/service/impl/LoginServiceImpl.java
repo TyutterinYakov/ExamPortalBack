@@ -11,13 +11,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import portal.exception.UserNotFoundException;
 import portal.model.JwtRequest;
 import portal.model.User;
 import portal.security.JwtTokenProvider;
-import portal.security.UserDetailsServiceImpl;
 import portal.service.UserService;
 
 @Service
