@@ -4,7 +4,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -19,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
-import portal.model.Category;
 import portal.model.Quize;
 import portal.service.QuizeService;
 
@@ -28,33 +30,46 @@ import portal.service.QuizeService;
 @RequestMapping("/quize")
 public class QuizeController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(QuizeController.class);
+	
 	@Autowired
 	private QuizeService quizeService;
 	
 	
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Quize> addQuize(@RequestBody @Valid Quize quize, BindingResult result) throws InvalidDataException{
-		if(!result.hasErrors()) {
-			return ResponseEntity.ok(quizeService.addQuize(quize));
+	public ResponseEntity<?> addQuize(@RequestBody @Valid Quize quize, BindingResult result){
+		
+		try {
+		if(result.hasErrors()) {
+			throw new InvalidDataException("Ошибка при вводе данных теста");
 		}
-		throw new InvalidDataException("Ошибка при вводе данных теста");
+		return ResponseEntity.ok(quizeService.addQuize(quize));
+		} catch (InvalidDataException ex) {
+			logger.error(quize.toString(), ex);
+			return new ResponseEntity<>("Ошибка при вводе данных теста", HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public Quize getQuize(@PathVariable Long id) {
-		return quizeService.getQuize(id);
+	public ResponseEntity<?> getQuize(@PathVariable Long id) {
+		return ResponseEntity.ok(quizeService.getQuize(id));
 	}
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Quize> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) throws InvalidDataException{
-		if(!result.hasErrors()) {
-			return ResponseEntity.ok(quizeService.updateQuize(quize));
+	public ResponseEntity<?> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) {
+		try {
+		if(result.hasErrors()) {
+			throw new InvalidDataException();
+		}
+		return ResponseEntity.ok(quizeService.updateQuize(quize));
+		} catch(InvalidDataException ex) {
+			logger.error(quize.toString(), ex);
+			return new ResponseEntity<>("Ошибка при вводе данных теста", HttpStatus.BAD_REQUEST);
 		}
 		
-		throw new InvalidDataException("Ошибка при вводе данных теста");
 	}
 	
 	@DeleteMapping("/{id}")
@@ -73,9 +88,7 @@ public class QuizeController {
 	@GetMapping("/category/{categoryId}")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(@PathVariable("categoryId") Long id){
-		Category ct = new Category();
-		ct.setCategoryId(id);
-		return quizeService.getQuiziesOfCategory(ct);
+		return ResponseEntity.ok(quizeService.getQuiziesOfCategory(id));
 	}
 	
 

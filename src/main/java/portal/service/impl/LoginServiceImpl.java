@@ -35,21 +35,17 @@ public class LoginServiceImpl {
 	
 	
 	@Transactional
-	public ResponseEntity<?> getAuthenticate(JwtRequest request) throws UserNotFoundException{
-		try {
+	public Map<Object, Object> getAuthenticate(JwtRequest request) throws UserNotFoundException, AuthenticationException {
 			authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
 			User user = userService.findUserByUserName(request.getUserName());
 			if(user==null) {
-				throw new UserNotFoundException("Usent doesnt exists");
+				throw new UserNotFoundException();
 			}
 			String token = jwtProvider.createToken(request.getUserName(), user.getRole().name());
 			Map<Object, Object> response = new HashMap<>();
 			response.put("username", request.getUserName());
 			response.put("token", token);
 			
-			return ResponseEntity.ok(response);
-		} catch(AuthenticationException ex) {
-			return new ResponseEntity<>("Invalid email/password or all", HttpStatus.FORBIDDEN);
-		}
+			return response;
 	}
 }

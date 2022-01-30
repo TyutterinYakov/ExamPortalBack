@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import portal.dao.QuestionRepository;
@@ -64,13 +63,15 @@ public class QuizeServiceImpl implements QuizeService{
 	}
 
 	@Override
-	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct) {
+	public List<Quize> getQuiziesOfCategory(Long categoryId) {
+		Category category = new Category();
+		category.setCategoryId(categoryId);
 		List<Quize> quizies = new LinkedList<>();
-		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(ct, true);
+		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(category, true);
 		if(listOptional.isPresent()) {
 			quizies = listOptional.get();
 		}
-		return ResponseEntity.ok(quizies);
+		return quizies;
 	}
 
 		

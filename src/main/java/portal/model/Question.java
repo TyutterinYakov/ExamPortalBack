@@ -105,7 +105,13 @@ public class Question {
 		this.quize = quize;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "questionId: "+questionId+" content: "+content+" image: "+image
+				+" givenAnswer: "+givenAnswer+" option1: "+option1+" option2: "+option2
+				+" option3: "+option3+" option4: "+option4+" answer: "+answer
+				+" quize: "+quize;
+	}
 	
 	
 	

@@ -131,6 +131,13 @@ public class User{
 		this.enabled = enabled;
 	}
 	
+	public String toString() {
+		return "userId: "+userId+" userName: "+userName+" password: "+password
+				+"firstName: "+firstName+" lastName: "+lastName
+				+" email: "+email+" phone: "+phone+" enabled: "+enabled
+				+" profile "+profile+" role "+role.name();
+	}
+	
 	
 	
 	

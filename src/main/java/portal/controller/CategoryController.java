@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -28,28 +31,32 @@ import portal.service.CategoryService;
 @CrossOrigin(origins = "http://localhost:4200/")
 public class CategoryController {
 
+	private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 	
 	@Autowired
 	private CategoryService categoryService;
 	
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<Category> addCategory(@RequestBody @Valid Category cat, BindingResult result) throws InvalidDataException {
-		
-		if(!result.hasErrors()) {
-			Category category = categoryService.addCategory(cat);
-			return ResponseEntity.ok(category);
+	public ResponseEntity<?> addCategory(@RequestBody @Valid Category cat, BindingResult result) {
+		try {
+		if(result.hasErrors()) {
+			throw new InvalidDataException();
 		}
-		
-		throw new InvalidDataException("Ошибка при вводе данных категории");
+		Category category = categoryService.addCategory(cat);
+		return ResponseEntity.ok(category);
+		} catch(InvalidDataException ex) {
+			logger.error(cat.toString(), ex);
+			return new ResponseEntity<>("Ошибка при вводе данных категории", HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public Category getCategory(@PathVariable("id") Long id) {
+	public ResponseEntity<Category> getCategory(@PathVariable("id") Long id) {
 		
-		return categoryService.getCategory(id);
+		return ResponseEntity.ok(categoryService.getCategory(id));
 	}
 	
 	@GetMapping("/")
@@ -59,11 +66,17 @@ public class CategoryController {
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public Category updateCategory(@RequestBody @Valid Category category, BindingResult result) throws InvalidDataException {
-		if(!result.hasErrors()) {
-			return categoryService.updateCategory(category);
+	public ResponseEntity<?> updateCategory(@RequestBody @Valid Category category, BindingResult result) 
+	{
+		try {
+		if(result.hasErrors()) {
+			throw new InvalidDataException();
 		}
-		throw new InvalidDataException("Ошибка при вводе данных категории");
+			return ResponseEntity.ok(categoryService.updateCategory(category));
+		} catch(InvalidDataException ex) {
+			logger.error(category.toString(), ex);
+			return new ResponseEntity<>("Ошибка ввода данных для обновления категории", HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@DeleteMapping("/{id}")

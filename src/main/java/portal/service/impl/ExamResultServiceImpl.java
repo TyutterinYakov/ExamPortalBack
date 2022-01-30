@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import portal.dao.ExamResultRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.UserRepository;
+import portal.exception.InvalidDataException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
@@ -35,23 +35,21 @@ public class ExamResultServiceImpl implements ExamResultService {
 	}
 
 	@Override
-	public ResponseEntity<List<ExamResult>> getAllResultFromQuize(Long id) {
+	public List<ExamResult> getAllResultFromQuize(Long id) {
 		Quize quize = new Quize();
-		quize.setQuizeId(id);
-		List<ExamResult> results = examResultDao.findAllByQuize(quize);
-		
-		return ResponseEntity.ok(results);
+		quize.setQuizeId(id);		
+		return examResultDao.findAllByQuize(quize);
 	}
 
 	@Override
-	public ResponseEntity<List<ExamResult>> checkUserResultExam(String name, Long id) throws UserNotFoundException {
+	public List<ExamResult> checkUserResultExam(String name, Long id) throws UserNotFoundException {
 		User user = userDao.findByUserName(name).orElseThrow(()->
 			new UserNotFoundException("Проверка на прохождение теста! Пользователь не найден")
 	);
 		Quize quize = new Quize();
 		quize.setQuizeId(id);
 	
-	return ResponseEntity.ok(examResultDao.findAllByUserAndQuize(user, quize));
+	return examResultDao.findAllByUserAndQuize(user, quize);
 	}
 
 	@Override
@@ -61,7 +59,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
 
 	@Override
-	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, NotFoundException {
+	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, InvalidDataException {
 		int validQuestion=0;
 		int invalidQuestion=0;
 		int skipQuestion=0;
@@ -70,7 +68,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 		Quize quize = questions.get(0).getQuize();
 		for(Question q: questions){
 			Map<String, String> givenAndAnswer = new HashMap<>();
-			Question question = questionDao.findById(q.getQuestionId()).orElseThrow(()->new NotFoundException());
+			Question question = questionDao.findById(q.getQuestionId()).orElseThrow(()->new InvalidDataException());
 			if(q.getGivenAnswer().trim()==""||q.getGivenAnswer()==null) {
 				++skipQuestion;
 			} 
@@ -100,11 +98,11 @@ public class ExamResultServiceImpl implements ExamResultService {
 	}
 
 	@Override
-	public ResponseEntity<List<ExamResult>> checkUserAllResultExam(String name) throws UserNotFoundException {
+	public List<ExamResult> checkUserAllResultExam(String name) throws UserNotFoundException {
 		User user = userDao.findByUserName(name).orElseThrow(()->
 		new UserNotFoundException("Пользователь не найден при поиске результатов теста"));
 		
-		return ResponseEntity.ok(user.getResults());
+		return user.getResults();
 	}
 
 }

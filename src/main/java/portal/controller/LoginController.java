@@ -5,7 +5,11 @@ import java.security.Principal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +28,7 @@ import portal.service.impl.LoginServiceImpl;
 @RequestMapping
 @CrossOrigin(origins = "http://localhost:4200/")
 public class LoginController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	private UserDetailsServiceImpl userDetailsService;
 	private LoginServiceImpl loginService;
@@ -38,7 +42,15 @@ public class LoginController {
 
 	@PostMapping("/generate-token")
 	public ResponseEntity<?> authenticate(@RequestBody JwtRequest request) throws UserNotFoundException{
-		return loginService.getAuthenticate(request);
+		try {
+			return ResponseEntity.ok(loginService.getAuthenticate(request));
+		} catch(AuthenticationException ex) {
+			logger.error(request.getUserName(), ex);
+			return new ResponseEntity<>("Неправильный логин/пароль", HttpStatus.FORBIDDEN);
+		} catch(UserNotFoundException ex) {
+			logger.error(request.getUserName(), ex);
+			return new ResponseEntity<>("Пользователь с таким логином не найден", HttpStatus.FORBIDDEN);
+		}
 	}
 	
 	@PostMapping("/logout")

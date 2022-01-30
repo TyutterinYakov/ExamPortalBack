@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public User createUser(User user) throws Exception {
+	public User createUser(User user) throws UserFoundException {
 		
 		Optional<User> local = userDao.findByUserName(user.getUserName());
 		if(local.isPresent()) {

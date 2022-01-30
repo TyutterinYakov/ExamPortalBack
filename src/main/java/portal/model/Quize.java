@@ -99,6 +99,14 @@ public class Quize {
 		this.category = category;
 	}
 	
+	@Override
+	public String toString() {
+		return "quizeId: "+quizeId+" title: "+title+" description: "
+				+description+" active: "+active+" maxMarks: "
+				+maxMarks+" countOfQuestion: "+countOfQuestion
+				+" category: "+category+" questions: "+questions;
+	}
+	
 	
 	
 	

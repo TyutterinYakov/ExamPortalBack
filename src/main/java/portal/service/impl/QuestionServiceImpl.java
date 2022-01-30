@@ -3,13 +3,15 @@ package portal.service.impl;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
+import portal.exception.InvalidDataException;
+import portal.exception.NotPermissionException;
 import portal.model.Question;
 import portal.model.Quize;
 import portal.service.QuestionService;
@@ -73,15 +75,24 @@ public class QuestionServiceImpl implements QuestionService{
 	
 	
 	@Override
-	public List<Question> getQuestionsOfQuize(Long quizeId) {
+	public Set<Question> getQuestionsOfQuize(Long quizeId) throws NotPermissionException, InvalidDataException {
 		Optional<Quize> quizeOpt = quizeDao.findById(quizeId);
 		if(quizeOpt.isPresent()) {
-		Optional<List<Question>> questionOpt =  questionDao.findAllByQuize(quizeOpt.get());
-		if(questionOpt.isPresent()) {
-			return questionOpt.get();
+			if(!quizeOpt.get().isActive()) {
+				throw new NotPermissionException();
+			}
+			return quizeOpt.get().getQuestions();
 		}
+		throw new InvalidDataException();
+	}
+
+	@Override
+	public Set<Question> getAllQuestionsOfQuize(Long quizeId) throws InvalidDataException {
+		Optional<Quize> quizeOpt = quizeDao.findById(quizeId);
+		if(quizeOpt.isPresent()) {
+			return quizeOpt.get().getQuestions();
 		}
-		return new LinkedList<Question>();
+		throw new InvalidDataException();
 	}
 
 

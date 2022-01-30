@@ -36,59 +36,30 @@ public class ExamResult {
     private Quize quize;
     @Convert(converter = HashMapConverter.class)
     private Map<String, Map<String, String>> questionsAndGivenAnswer; //Map<id  теста Map<Ответ, который дан; Правильный ответ>
-    
    
 
 
 	public Map<String, Map<String, String>> getQuestionsAndGivenAnswer() {
 		return questionsAndGivenAnswer;
 	}
-
-
-
-
 	public void setQuestionsAndGivenAnswer(Map<String, Map<String, String>> questionsAndGivenAnswer) {
 		this.questionsAndGivenAnswer = questionsAndGivenAnswer;
 	}
-
-
-
-
 	public Long getAnswerId() {
 		return answerId;
 	}
-	
-
-
-
 	public User getUser() {
 		return user;
 	}
-
-
-
-
 	public void setUser(User user) {
 		this.user = user;
 	}
-
-
-
-
 	public Quize getQuize() {
 		return quize;
 	}
-
-
-
-
 	public void setQuize(Quize quize) {
 		this.quize = quize;
 	}
-
-
-
-
 	public void setAnswerId(Long answerId) {
 		this.answerId = answerId;
 	}
@@ -117,6 +88,13 @@ public class ExamResult {
 		this.countPoints = countPoints;
 	}
 	
+	@Override
+	public String toString() {
+		return "answerId: "+answerId+" validQuestion "+validQustion+" invalidQuestion "
+				+invalidQuestion+" skipQuestion "+skipQuestion
+				+" countPoints "+countPoints+" user "+user+" quize "+quize
+				+"questionsAndGivenAnswer "+questionsAndGivenAnswer;
+	}
 	
 	
 }

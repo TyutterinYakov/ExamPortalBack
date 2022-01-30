@@ -2,9 +2,7 @@ package portal.service;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-
-import portal.model.Category;
+import portal.exception.InvalidDataException;
 import portal.model.Quize;
 
 
@@ -14,5 +12,5 @@ public interface QuizeService {
 	public void removeQuize(Long id);
 	public List<Quize> listQuize();
 	public Quize getQuize(Long id);
-	public ResponseEntity<List<Quize>> getQuiziesOfCategory(Category ct);
+	public List<Quize> getQuiziesOfCategory(Long categoryId);
 }
