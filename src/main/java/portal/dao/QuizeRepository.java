@@ -14,6 +14,15 @@ public interface QuizeRepository extends JpaRepository<Quize, Long>{
 
 	Optional<List<Quize>> findAllByCategoryAndActive(Category ct, boolean tr);
 
+	Optional<Quize> findByActiveAndQuizeId(boolean b, Long id);
+
+	List<Quize> findAllByActive(boolean b);
+
+	Optional<List<Quize>> findByCategory(Category category);
+
+
+	Optional<List<Quize>> findAllByCategory(Category category);
+
 	
 
 

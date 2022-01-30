@@ -57,6 +57,13 @@ public class QuizeController {
 		return ResponseEntity.ok(quizeService.getQuize(id));
 	}
 	
+	@GetMapping("/any/{id}")
+	@PreAuthorize("hasAuthority('developers:write')")
+	public ResponseEntity<?> getQuizeAdmin(@PathVariable Long id) {
+		return ResponseEntity.ok(quizeService.getQuizeAdmin(id));
+	}
+	
+	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<?> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) {
@@ -81,14 +88,25 @@ public class QuizeController {
 	
 	@GetMapping("/")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<List<Quize>> getAllQuize() {
+	public ResponseEntity<List<Quize>> getAllQuizeUser() {
 		return ResponseEntity.ok(quizeService.listQuize());
+	}
+	@GetMapping("/any")
+	@PreAuthorize("hasAuthority('developers:write')")
+	public ResponseEntity<List<Quize>> getAllQuizeAdmin() {
+		return ResponseEntity.ok(quizeService.listQuizeAny());
 	}
 	
 	@GetMapping("/category/{categoryId}")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<List<Quize>> getQuiziesOfCategory(@PathVariable("categoryId") Long id){
 		return ResponseEntity.ok(quizeService.getQuiziesOfCategory(id));
+	}
+	
+	@GetMapping("/category/any/{categoryId}")
+	@PreAuthorize("hasAuthority('developers:write')")
+	public ResponseEntity<List<Quize>> getQuiziesOfCategoryAll(@PathVariable("categoryId") Long id){
+		return ResponseEntity.ok(quizeService.getQuiziesOfCategoryAll(id));
 	}
 	
 

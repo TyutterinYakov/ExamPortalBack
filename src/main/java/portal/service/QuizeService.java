@@ -2,7 +2,6 @@ package portal.service;
 
 import java.util.List;
 
-import portal.exception.InvalidDataException;
 import portal.model.Quize;
 
 
@@ -13,4 +12,7 @@ public interface QuizeService {
 	public List<Quize> listQuize();
 	public Quize getQuize(Long id);
 	public List<Quize> getQuiziesOfCategory(Long categoryId);
+	public Quize getQuizeAdmin(Long id);
+	List<Quize> getQuiziesOfCategoryAll(Long categoryId);
+	List<Quize> listQuizeAny();
 }

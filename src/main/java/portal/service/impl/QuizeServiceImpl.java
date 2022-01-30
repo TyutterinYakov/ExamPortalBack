@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import portal.dao.CategoryRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
 import portal.model.Category;
@@ -21,6 +22,8 @@ public class QuizeServiceImpl implements QuizeService{
 	private QuizeRepository quizeDao;
 	@Autowired
 	private QuestionRepository questionDao;
+	@Autowired
+	private CategoryRepository categoryDao;
 	
 	@Override
 	public Quize addQuize(Quize quize) {
@@ -50,12 +53,17 @@ public class QuizeServiceImpl implements QuizeService{
 
 	@Override
 	public List<Quize> listQuize() {
+		return quizeDao.findAllByActive(true);
+	}
+	
+	@Override
+	public List<Quize> listQuizeAny() {
 		return quizeDao.findAll();
 	}
 
 	@Override
 	public Quize getQuize(Long id) {
-		Optional<Quize> quizeOptional = quizeDao.findById(id);
+		Optional<Quize> quizeOptional = quizeDao.findByActiveAndQuizeId(true, id);
 		if(quizeOptional.isPresent()) {
 			return quizeOptional.get();
 		}
@@ -73,6 +81,26 @@ public class QuizeServiceImpl implements QuizeService{
 		}
 		return quizies;
 	}
+	@Override
+	public List<Quize> getQuiziesOfCategoryAll(Long categoryId) {
+		Optional<Category> category = categoryDao.findById(categoryId);
+		List<Quize> quizies = new LinkedList<>();
+		
+		if(category.isPresent()) {
+			category.get().getQuizies();
+		}
+		return quizies;
+	}
+
+	@Override
+	public Quize getQuizeAdmin(Long id) {
+		Optional<Quize> quizeOptional = quizeDao.findById(id);
+		if(quizeOptional.isPresent()) {
+			return quizeOptional.get();
+		}
+		return new Quize();
+	}
+	
 
 		
 	

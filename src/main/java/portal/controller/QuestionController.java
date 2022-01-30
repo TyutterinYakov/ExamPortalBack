@@ -37,14 +37,15 @@ public class QuestionController {
 	
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('developers:read')")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public Question getQuestion(@PathVariable Long id){
 		
 		return questionService.getQuestion(id);
 	}
 	
+	
 	@GetMapping("/")
-	@PreAuthorize("hasAuthority('developers:read')")
+	@PreAuthorize("hasAuthority('developers:write')")
 	public List<Question> getAllQuestion(){
 		return questionService.getListQuestion();
 	}
