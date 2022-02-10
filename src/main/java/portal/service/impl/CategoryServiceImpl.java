@@ -12,9 +12,14 @@ import portal.service.CategoryService;
 @Service
 public class CategoryServiceImpl implements CategoryService{
 
-	@Autowired
 	private CategoryRepository categoryDao;
 	
+	@Autowired
+	public CategoryServiceImpl(CategoryRepository categoryDao) {
+		super();
+		this.categoryDao = categoryDao;
+	}
+
 	@Override
 	public Category addCategory(Category category) {
 		

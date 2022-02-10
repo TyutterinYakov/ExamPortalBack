@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
+import portal.exception.UserFoundException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
@@ -73,6 +74,9 @@ public class ExamResultController {
 		} catch(InvalidDataException e) {
 			logger.error(questions.toString(), e);
 			return new ResponseEntity<>("Вопрос не найден", HttpStatus.BAD_REQUEST);
+		} catch (UserFoundException exception) {
+			logger.error(principal.getName(), exception);
+			return new ResponseEntity<>("Вы уже решили этот тест", HttpStatus.FORBIDDEN);
 		}
 	}
 	

@@ -17,6 +17,7 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
 	List<ExamResult> findAllByUserAndQuize(User user, Quize quize);
 
 	List<ExamResult> findAllByUser(User user);
+
 	
 //	@Query(nativeQuery=true, value="select answer_id, count_points, invalid_question, skip_question, valid_qustion from quize_statistic "
 //			+ "	inner join answer_quize "

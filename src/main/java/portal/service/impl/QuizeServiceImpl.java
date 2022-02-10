@@ -18,13 +18,18 @@ import portal.service.QuizeService;
 @Service
 public class QuizeServiceImpl implements QuizeService{
 
-	@Autowired
 	private QuizeRepository quizeDao;
-	@Autowired
 	private QuestionRepository questionDao;
-	@Autowired
 	private CategoryRepository categoryDao;
 	
+	@Autowired
+	public QuizeServiceImpl(QuizeRepository quizeDao, QuestionRepository questionDao, CategoryRepository categoryDao) {
+		super();
+		this.quizeDao = quizeDao;
+		this.questionDao = questionDao;
+		this.categoryDao = categoryDao;
+	}
+
 	@Override
 	public Quize addQuize(Quize quize) {
 		quize.setCountOfQuestion(0); 

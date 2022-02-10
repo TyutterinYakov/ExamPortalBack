@@ -1,14 +1,17 @@
 package portal.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class UserFoundException extends Exception {
 
 	public UserFoundException() {
-		super("UserName is already exist from DB");
+		super();
 	}
 	
 	public UserFoundException(String msg) {
 		super(msg);
 	}
+	
 	
 	
 }

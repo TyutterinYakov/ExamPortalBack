@@ -32,10 +32,15 @@ import portal.service.QuestionService;
 public class QuestionController {
 	private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 	
-	@Autowired
 	private QuestionService questionService;
 	
-	
+	@Autowired
+	public QuestionController(QuestionService questionService) {
+		super();
+		this.questionService = questionService;
+	}
+
+
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public Question getQuestion(@PathVariable Long id){

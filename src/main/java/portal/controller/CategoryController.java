@@ -33,9 +33,15 @@ public class CategoryController {
 
 	private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 	
-	@Autowired
 	private CategoryService categoryService;
 	
+	@Autowired
+	public CategoryController(CategoryService categoryService) {
+		super();
+		this.categoryService = categoryService;
+	}
+
+
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<?> addCategory(@RequestBody @Valid Category cat, BindingResult result) {

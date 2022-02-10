@@ -11,6 +11,7 @@ import portal.dao.ExamResultRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.UserRepository;
 import portal.exception.InvalidDataException;
+import portal.exception.UserFoundException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
@@ -58,13 +59,18 @@ public class ExamResultServiceImpl implements ExamResultService {
 
 
 	@Override
-	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, InvalidDataException {
+	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, InvalidDataException, UserFoundException {
+		
 		int validQuestion=0;
 		int invalidQuestion=0;
 		int skipQuestion=0;
-		
-		Map<String, Map<String, String>> allExamResult = new HashMap<>();
+		User user = userDao.findByUserName(name).orElseThrow(()->
+			new UserNotFoundException("Результат теста не записан! Пользователь не найден"));
 		Quize quize = questions.get(0).getQuize();
+		if(!examResultDao.findAllByUserAndQuize(user, quize).isEmpty()) {
+			throw new UserFoundException(user.toString());
+		}
+		Map<String, Map<String, String>> allExamResult = new HashMap<>();
 		for(Question q: questions){
 			Map<String, String> givenAndAnswer = new HashMap<>();
 			Question question = questionDao.findById(q.getQuestionId()).orElseThrow(()->new InvalidDataException());
@@ -86,8 +92,6 @@ public class ExamResultServiceImpl implements ExamResultService {
 		result.setSkipQuestion(skipQuestion);
 		result.setValidQustion(validQuestion);
 		result.setCountPoints(validQuestion*quize.getMaxMarks()/quize.getCountOfQuestion()); 
-		User user = userDao.findByUserName(name).orElseThrow(()->
-			new UserNotFoundException("Результат теста не записан! Пользователь не найден"));
 		result.setUser(user);
 		result.setQuize(quize);
 		result.setQuestionsAndGivenAnswer(allExamResult);

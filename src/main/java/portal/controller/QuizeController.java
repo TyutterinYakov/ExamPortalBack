@@ -32,10 +32,14 @@ public class QuizeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(QuizeController.class);
 	
-	@Autowired
 	private QuizeService quizeService;
 	
-	
+	@Autowired
+	public QuizeController(QuizeService quizeService) {
+		super();
+		this.quizeService = quizeService;
+	}
+
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<?> addQuize(@RequestBody @Valid Quize quize, BindingResult result){

@@ -1,5 +1,6 @@
 package portal.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 
 import javax.validation.Valid;
@@ -13,11 +14,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import portal.exception.InvalidDataException;
 import portal.exception.NotPermissionException;
@@ -32,11 +37,14 @@ import portal.service.UserService;
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-	@Autowired
+	
 	private UserService userService;
 	
-	
-	
+	@Autowired
+	public UserController(UserService userService) {
+		super();
+		this.userService = userService;
+	}
 	
 	@PostMapping("/")
 	public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult result) {
@@ -82,6 +90,44 @@ public class UserController {
 	public void deleteUser(Principal principal) {
 	
 		userService.deleteUser(principal.getName());
+	}
+	
+	@GetMapping("/image")
+	@PreAuthorize("hasAuthority('developers:read')")
+	public ResponseEntity<?> getImageProfile(Principal principal){
+		
+		try {
+			return ResponseEntity.ok(userService.getImageProfile(principal.getName()));
+		} catch (UserNotFoundException e) {
+			logger.error("Пользователь не найден", e);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		} catch (IOException e) {
+			logger.error("Ошибка при чтении файла", e);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch(NullPointerException ex) {
+			logger.error("Необходима переавторизация", ex);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+	}
+	@PostMapping("/image")
+	@PreAuthorize("hasAuthority('developers:read')")
+	public ResponseEntity<?> addImageProfile(@RequestParam("image") MultipartFile file, Principal principal){
+		try {
+			if(file.isEmpty()||principal.getName().isEmpty()) {
+				throw new NullPointerException();
+			}
+			userService.addImageProfile(principal.getName(), file);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch(NullPointerException ex) {
+			logger.error("Файл не отправлен или principal пуст", ex);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch(IOException e) {
+			logger.error("Ошибка при записи файла", e);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (UserNotFoundException e) {
+			logger.error("Ошибка пользователя", e);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
 	}
 	
 }

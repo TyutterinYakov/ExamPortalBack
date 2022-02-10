@@ -1,11 +1,13 @@
 package portal.service.impl;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import portal.dao.UserRepository;
 import portal.exception.NotPermissionException;
@@ -14,21 +16,28 @@ import portal.exception.UserNotFoundException;
 import portal.model.Role;
 import portal.model.User;
 import portal.service.UserService;
+import portal.util.UploadAndRemoveImage;
 
 @Service
 public class UserServiceImpl implements UserService{
 
+	private UserRepository userDao;
+	private UploadAndRemoveImage imageUtil;
 	
 	@Autowired
-	private UserRepository userDao;
-	
+	public UserServiceImpl(UserRepository userDao, UploadAndRemoveImage imageUtil) {
+		super();
+		this.userDao = userDao;
+		this.imageUtil = imageUtil;
+	}
 	
 	
 	public PasswordEncoder passwordEncoder()
 	{
 	    return new BCryptPasswordEncoder();
 	}
-	
+
+
 	@Override
 	public User createUser(User user) throws UserFoundException {
 		
@@ -82,5 +91,27 @@ public class UserServiceImpl implements UserService{
 		}
 		throw new UserNotFoundException();
 	}
+
+	@Override
+	public void addImageProfile(String name, MultipartFile file) throws IOException, UserNotFoundException {
+		User user = getUserByUsername(name);
+		String imageName = imageUtil.uploadImage(file, "images/profile");
+		imageUtil.deleteImage(user.getProfile(), "images/profile/");
+		user.setProfile(imageName);
+		userDao.save(user);
+	}
+	
+	@Override
+	public byte[] getImageProfile(String name) throws UserNotFoundException, IOException {
+		User user = getUserByUsername(name);
+		return imageUtil.getImage(user.getProfile(), "images/profile/");
+	}
+	
+	
+	private User getUserByUsername(String userName) throws UserNotFoundException {
+		return userDao.findByUserName(userName).orElseThrow(()->
+			new UserNotFoundException());
+	}
+
 
 }

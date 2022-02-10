@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import portal.exception.InvalidDataException;
+import portal.exception.UserFoundException;
 import portal.exception.UserNotFoundException;
 import portal.model.ExamResult;
 import portal.model.Question;
@@ -12,6 +13,6 @@ public interface ExamResultService {
 	public List<ExamResult> getAllResultFromQuize(Long id);
 	public List<ExamResult> checkUserResultExam(String name, Long id) throws UserNotFoundException;
 	public void removeExamResult(Long id);
-	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, InvalidDataException;
+	public ExamResult getExamResult(String name, List<Question> questions) throws UserNotFoundException, InvalidDataException, UserFoundException;
 	public List<ExamResult> checkUserAllResultExam(String name) throws UserNotFoundException;
 }
