@@ -1,6 +1,5 @@
 package portal.api.controller;
 
-import java.io.IOException;
 import java.security.Principal;
 
 import javax.validation.Valid;
@@ -20,19 +19,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import portal.api.dto.UserDto;
 import portal.api.exception.BadRequestException;
-import portal.api.exception.NotPermissionException;
-import portal.api.exception.UserFoundException;
-import portal.api.exception.UserNotFoundException;
 import portal.api.service.UserService;
-import portal.store.entity.User;
+import portal.store.entity.UserEntity;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 @CrossOrigin(origins = "http://localhost:4200/")
 public class UserController {
 
@@ -46,32 +42,40 @@ public class UserController {
 		this.userService = userService;
 	}
 	
-	@PostMapping("/")
-	public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult result) {
+	
+	private static final String DELETE_USER_BY_PRINCIPAL="/api/user";
+	private static final String UPDATE_USER_PROFILE_BY_PRINCIPAL="/api/user";
+	private static final String CREATE_USER="/api/user/";
+	private static final String UPDATE_IMAGE_PROFILE_BY_PRINCIPAL="/api/user/image";
+	private static final String GET_IMAGE_PROFILE_BY_PRINCIPAL="/api/user/image";
+	
+	
+	@PostMapping(CREATE_USER)
+	public ResponseEntity<?> createUser(@RequestBody @Valid UserEntity user, BindingResult result) {
 		checkValidateForm(result);
 		return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/")
+	@PutMapping(UPDATE_USER_PROFILE_BY_PRINCIPAL)
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<?> updateUserProfile(Principal principal, @RequestBody @Valid User user, BindingResult result) {
+	public ResponseEntity<?> updateUserProfile(Principal principal, @RequestBody @Valid UserDto user, BindingResult result) {
 		checkValidateForm(result);
 		return ResponseEntity.ok(userService.updateUser(principal.getName(),user));
 	}
 	
-	@DeleteMapping("/")
+	@DeleteMapping(DELETE_USER_BY_PRINCIPAL)
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> deleteUser(Principal principal) {
 		userService.deleteUser(principal.getName());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
-	@GetMapping("/image")
+	@GetMapping(GET_IMAGE_PROFILE_BY_PRINCIPAL)
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> getImageProfile(Principal principal){
 		return ResponseEntity.ok(userService.getImageProfile(principal.getName()));
 	}
-	@PostMapping("/image")
+	@PostMapping(UPDATE_IMAGE_PROFILE_BY_PRINCIPAL)
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> addImageProfile(@RequestParam("image") MultipartFile file, Principal principal){
 		userService.addImageProfile(principal.getName(), file);

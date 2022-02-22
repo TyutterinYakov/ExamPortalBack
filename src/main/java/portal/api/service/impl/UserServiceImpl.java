@@ -8,12 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import portal.api.dto.UserDto;
+import portal.api.dto.factory.UserDtoFactory;
 import portal.api.exception.NotFoundException;
 import portal.api.exception.UserFoundException;
 import portal.api.exception.UserNotFoundException;
 import portal.api.service.UserService;
 import portal.api.util.UploadAndRemoveImage;
-import portal.store.entity.User;
+import portal.store.entity.Role;
+import portal.store.entity.UserEntity;
 import portal.store.repository.UserRepository;
 
 @Service
@@ -22,16 +25,18 @@ public class UserServiceImpl implements UserService{
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	private UserRepository userDao;
+	private UserDtoFactory userDtoFactory;
 	private UploadAndRemoveImage imageUtil;
 	
 	@Autowired
-	public UserServiceImpl(UserRepository userDao, UploadAndRemoveImage imageUtil) {
+	public UserServiceImpl(UserRepository userDao, UserDtoFactory userDtoFactory, UploadAndRemoveImage imageUtil) {
 		super();
 		this.userDao = userDao;
+		this.userDtoFactory = userDtoFactory;
 		this.imageUtil = imageUtil;
 	}
-	
-	
+
+
 	public PasswordEncoder passwordEncoder()
 	{
 	    return new BCryptPasswordEncoder();
@@ -39,7 +44,7 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public User createUser(User user) throws UserFoundException {
+	public UserDto createUser(UserEntity user) throws UserFoundException {
 		
 		userDao.findByUserName(
 				user.getUserName())
@@ -51,11 +56,12 @@ public class UserServiceImpl implements UserService{
 						}
 					);
 		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
-		return userDao.saveAndFlush(user);
+		user.setRole(Role.USER);
+		return userDtoFactory.createUserDto(userDao.saveAndFlush(user));
 	}
 
 	@Override
-	public User findUserByUserName(String userName){
+	public UserEntity findUserByUserName(String userName){
 		return userDao.findByUserName(userName).orElseThrow(()->
 					new NotFoundException("Пользователь не найден"));
 	}
@@ -66,18 +72,18 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User updateUser(String userName, User user) {
-		User userOld = findUserByUserName(userName);
-		userOld.setFirstName(user.getFirstName());
-		userOld.setLastName(user.getLastName());
-		userOld.setPhone(user.getPhone());
-		userOld.setEmail(user.getEmail());
-		return userDao.saveAndFlush(userOld);
+	public UserDto updateUser(String userName, UserDto user) {
+		return userDtoFactory
+				.createUserDto(
+						userDao.saveAndFlush(
+								findUserByUserName(userName)
+								.makeUserDto(user))
+						);
 	}
 
 	@Override
 	public void addImageProfile(String name, MultipartFile file) {
-		User user = getUserByUsername(name);
+		UserEntity user = getUserByUsername(name);
 		String imageName = imageUtil.uploadImage(file, "images/profile");
 		imageUtil.deleteImage(user.getProfile(), "images/profile/");
 		user.setProfile(imageName);
@@ -93,7 +99,7 @@ public class UserServiceImpl implements UserService{
 				);
 	}
 	
-	private User getUserByUsername(String userName) throws UserNotFoundException {
+	private UserEntity getUserByUsername(String userName) throws UserNotFoundException {
 		return userDao.findByUserName(userName).orElseThrow(()->
 			new UserNotFoundException());
 	}

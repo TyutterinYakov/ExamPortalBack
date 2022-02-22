@@ -3,8 +3,6 @@ package portal.api.controller;
 import java.security.Principal;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import portal.api.exception.UserFoundException;
-import portal.api.exception.UserNotFoundException;
+import portal.api.dto.QuestionDto;
 import portal.api.service.ExamResultService;
-import portal.store.entity.ExamResult;
+import portal.store.entity.ExamResultEntity;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -51,7 +48,7 @@ public class ExamResultController {
 	
 	@GetMapping(GET_EXAM_RESULT_BY_QUIZE_ID) //get exam result by quize id
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<List<ExamResult>> getAllExamResultFromQuize(@PathVariable("quizeId") Long id){
+	public ResponseEntity<List<ExamResultEntity>> getAllExamResultFromQuize(@PathVariable("quizeId") Long id){
 		return ResponseEntity.ok(examResultService.getAllResultFromQuize(id));
 	}
 	
@@ -73,13 +70,13 @@ public class ExamResultController {
 	}
 	
 	
-//	@PostMapping(SUBMIT_TEST_ANSWER) 						///submit test answers
-//	@PreAuthorize("hasAuthority('developers:read')")
-//	public ResponseEntity<?> submitTestAnswer(@RequestBody List<Question> questions, Principal principal) {
-//		return new ResponseEntity<>(examResultService.getExamResult(
-//								principal.getName(), questions), HttpStatus.CREATED);
-//	}
-//	
+	@PostMapping(SUBMIT_TEST_ANSWER) 						///submit test answers
+	@PreAuthorize("hasAuthority('developers:read')")
+	public ResponseEntity<?> submitTestAnswer(@RequestBody List<QuestionDto> questions, Principal principal) {
+		return new ResponseEntity<>(examResultService.getExamResult(
+								principal.getName(), questions), HttpStatus.CREATED);
+	}
+	
 	@GetMapping(GET_ALL_EXAM_RESULT_BY_PRINCIPAL_USER)
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> getAllResultsExamsByUser(Principal principal){

@@ -23,7 +23,7 @@ import portal.api.exception.UserNotFoundException;
 import portal.api.security.UserDetailsServiceImpl;
 import portal.api.service.impl.LoginServiceImpl;
 import portal.store.entity.JwtRequest;
-import portal.store.entity.User;
+import portal.store.entity.UserEntity;
 
 @RestController
 @RequestMapping
@@ -57,7 +57,7 @@ public class LoginController {
 	}
 	
 	@GetMapping(GET_CURRENT_USER_BY_PRINCIPAL)
-	public User getCurrentUser(Principal principal) {
+	public UserEntity getCurrentUser(Principal principal) {
 		return userDetailsService.getUser(principal.getName());
 	}
 }

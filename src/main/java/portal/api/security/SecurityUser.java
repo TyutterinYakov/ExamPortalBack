@@ -59,7 +59,7 @@ public class SecurityUser  implements UserDetails{
 		return isActive;
 	}
 	
-	public static UserDetails fromUser(portal.store.entity.User user) {
+	public static UserDetails fromUser(portal.store.entity.UserEntity user) {
 		return new org.springframework.security.core.userdetails.User(
 				user.getUserName(),
 				user.getPassword(),

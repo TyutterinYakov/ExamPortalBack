@@ -48,8 +48,9 @@ public class CategoryServiceImpl implements CategoryService{
 		getCategoryById(categoryDto.getCategoryId());
 		return categoryDtoFactory
 				.createCategoryDto(
-						new CategoryEntity()
-							.makeCategoryDto(categoryDto));
+						categoryDao.saveAndFlush(
+							new CategoryEntity()
+								.makeCategoryDto(categoryDto)));
 	}
 	
 	//READ

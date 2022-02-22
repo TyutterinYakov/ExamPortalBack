@@ -2,13 +2,19 @@ package portal.api.service;
 
 import java.util.List;
 
-import portal.store.entity.ExamResult;
-import portal.store.entity.QuestionEntity;
+import portal.api.dto.ExamResultDto;
+import portal.api.dto.QuestionDto;
+import portal.store.entity.ExamResultEntity;
 
 public interface ExamResultService {
-	public List<ExamResult> getAllResultFromQuize(Long id);
-	public List<ExamResult> checkUserResultExam(String name, Long id);
+	
+	//WRITE
 	public void removeExamResult(Long id);
-	public ExamResult getExamResult(String name, List<QuestionEntity> questions);
-	public List<ExamResult> checkUserAllResultExam(String name);
+	public List<ExamResultEntity> getAllResultFromQuize(Long id);
+	
+	
+	//READ
+	public List<ExamResultDto> checkUserResultExam(String name, Long id);
+	public ExamResultDto getExamResult(String name, List<QuestionDto> questions);
+	public List<ExamResultDto> checkUserAllResultExam(String name);
 }

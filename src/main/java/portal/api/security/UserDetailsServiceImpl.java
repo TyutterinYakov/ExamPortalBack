@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import portal.store.entity.User;
+import portal.store.entity.UserEntity;
 import portal.store.repository.UserRepository;
 
 
@@ -24,9 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		this.userDao = userDao;
 	}
 
-	public User getUser(String name) {
+	public UserEntity getUser(String name) {
 		loadUserByUsername(name);
-		User user = userDao.findByUserName(name).orElseThrow(()->
+		UserEntity user = userDao.findByUserName(name).orElseThrow(()->
 		new UsernameNotFoundException(name));
 		return user;
 	}
@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.findByUserName(username).orElseThrow(()->
+		UserEntity user = userDao.findByUserName(username).orElseThrow(()->
 		new UsernameNotFoundException(username));
 		return SecurityUser.fromUser(user);
 	}

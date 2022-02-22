@@ -19,25 +19,37 @@ import portal.api.util.HashMapConverter;
 
 @Entity
 @Table(name="quize_statistic")
-public class ExamResult {
+public class ExamResultEntity {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="answer_id")
 	private Long answerId;
-	private int validQustion;
+	private int validQuestion;
 	private int invalidQuestion;
 	private int skipQuestion;
 	private int countPoints;
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private User user;
+    private UserEntity user;
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private QuizeEntity quize;
     @Convert(converter = HashMapConverter.class)
     private Map<String, Map<String, String>> questionsAndGivenAnswer; //Map<id  теста Map<Ответ, который дан; Правильный ответ>
    
-
-
+	public ExamResultEntity() {
+		super();
+	}
+	public ExamResultEntity(int validQuestion, int invalidQuestion, int skipQuestion, int countPoints, UserEntity user,
+			QuizeEntity quize, Map<String, Map<String, String>> questionsAndGivenAnswer) {
+		super();
+		this.validQuestion = validQuestion;
+		this.invalidQuestion = invalidQuestion;
+		this.skipQuestion = skipQuestion;
+		this.countPoints = countPoints;
+		this.user = user;
+		this.quize = quize;
+		this.questionsAndGivenAnswer = questionsAndGivenAnswer;
+	}
 	public Map<String, Map<String, String>> getQuestionsAndGivenAnswer() {
 		return questionsAndGivenAnswer;
 	}
@@ -47,10 +59,10 @@ public class ExamResult {
 	public Long getAnswerId() {
 		return answerId;
 	}
-	public User getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 	public QuizeEntity getQuize() {
@@ -62,11 +74,11 @@ public class ExamResult {
 	public void setAnswerId(Long answerId) {
 		this.answerId = answerId;
 	}
-	public int getValidQustion() {
-		return validQustion;
+	public int getValidQuestion() {
+		return validQuestion;
 	}
-	public void setValidQustion(int validQustion) {
-		this.validQustion = validQustion;
+	public void setValidQuestion(int validQustion) {
+		this.validQuestion = validQustion;
 	}
 	public int getInvalidQuestion() {
 		return invalidQuestion;
@@ -89,7 +101,7 @@ public class ExamResult {
 	
 	@Override
 	public String toString() {
-		return "answerId: "+answerId+" validQuestion "+validQustion+" invalidQuestion "
+		return "answerId: "+answerId+" validQuestion "+validQuestion+" invalidQuestion "
 				+invalidQuestion+" skipQuestion "+skipQuestion
 				+" countPoints "+countPoints+" user "+user+" quize "+quize
 				+"questionsAndGivenAnswer "+questionsAndGivenAnswer;

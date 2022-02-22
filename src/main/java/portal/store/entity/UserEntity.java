@@ -20,12 +20,14 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import portal.api.dto.UserDto;
+
 
 
 
 @Entity
 @Table(name="users")
-public class User{
+public class UserEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="user_id")
@@ -59,15 +61,26 @@ public class User{
 	private Role role = Role.USER;
 	@JsonIgnore
 	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
-	private List<ExamResult> results = new LinkedList<>();
+	private List<ExamResultEntity> results = new LinkedList<>();
 	
+	public UserEntity() {
+		super();
+	}
+	public UserEntity(@Size(max = 30, min = 2, message = "Size firstName min4 or max30") @NotEmpty String firstName,
+			@Size(max = 30, min = 2, message = "Size lastName min4 or max30") @NotEmpty String lastName,
+			@Size(max = 40, min = 4, message = "Size email min4 or max40") @NotEmpty String email,
+			@Size(max = 15, min = 4, message = "Size phone min4 or max15") @NotEmpty String phone) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phone = phone;
+	}
 	
-	
-	
-	public List<ExamResult> getResults() {
+	public List<ExamResultEntity> getResults() {
 		return results;
 	}
-	public void setResults(List<ExamResult> results) {
+	public void setResults(List<ExamResultEntity> results) {
 		this.results = results;
 	}
 	public Role getRole() {
@@ -136,6 +149,14 @@ public class User{
 				+"firstName: "+firstName+" lastName: "+lastName
 				+" email: "+email+" phone: "+phone+" enabled: "+enabled
 				+" profile "+profile+" role "+role.name();
+	}
+	
+	public UserEntity makeUserDto(UserDto userDto) {
+		this.email=userDto.getEmail();
+		this.firstName=userDto.getFirstName();
+		this.lastName=userDto.getLastName();
+		this.phone=userDto.getPhone();
+		return this;
 	}
 	
 	
