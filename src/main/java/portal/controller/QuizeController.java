@@ -43,44 +43,27 @@ public class QuizeController {
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<?> addQuize(@RequestBody @Valid Quize quize, BindingResult result){
-		
-		try {
-		if(result.hasErrors()) {
-			throw new InvalidDataException("Ошибка при вводе данных теста");
-		}
-		return ResponseEntity.ok(quizeService.addQuize(quize));
-		} catch (InvalidDataException ex) {
-			logger.error(quize.toString(), ex);
-			return new ResponseEntity<>("Ошибка при вводе данных теста", HttpStatus.BAD_REQUEST);
-		}
+		checkValidateForm(result);
+		return new ResponseEntity<>(quizeService.addQuize(quize), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<?> getQuize(@PathVariable Long id) {
+	public ResponseEntity<Quize> getQuize(@PathVariable Long id) {
 		return ResponseEntity.ok(quizeService.getQuize(id));
 	}
 	
 	@GetMapping("/any/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> getQuizeAdmin(@PathVariable Long id) {
+	public ResponseEntity<Quize> getQuizeAdmin(@PathVariable Long id) {
 		return ResponseEntity.ok(quizeService.getQuizeAdmin(id));
 	}
 	
-	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) {
-		try {
-		if(result.hasErrors()) {
-			throw new InvalidDataException();
-		}
+	public ResponseEntity<Quize> updateQuize(@RequestBody @Valid Quize quize, BindingResult result) {
+		checkValidateForm(result);
 		return ResponseEntity.ok(quizeService.updateQuize(quize));
-		} catch(InvalidDataException ex) {
-			logger.error(quize.toString(), ex);
-			return new ResponseEntity<>("Ошибка при вводе данных теста", HttpStatus.BAD_REQUEST);
-		}
-		
 	}
 	
 	@DeleteMapping("/{id}")
@@ -113,6 +96,14 @@ public class QuizeController {
 		return ResponseEntity.ok(quizeService.getQuiziesOfCategoryAll(id));
 	}
 	
+	
+	
+	private boolean checkValidateForm(BindingResult result) {
+		if(result.hasErrors()) {
+			throw new InvalidDataException("Ошибка при вводе данных");
+		}
+		return result.hasErrors();
+	}
 
 	
 }

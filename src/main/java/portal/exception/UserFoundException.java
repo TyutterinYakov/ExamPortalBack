@@ -1,8 +1,7 @@
 package portal.exception;
 
-import org.springframework.http.HttpStatus;
 
-public class UserFoundException extends Exception {
+public class UserFoundException extends RuntimeException {
 
 	public UserFoundException() {
 		super();

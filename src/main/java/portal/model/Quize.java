@@ -39,7 +39,7 @@ public class Quize {
 	@Column(name="max_marks")
 	private int maxMarks;
 	@Column(name="count_of_question")
-	private int countOfQuestion;
+	private int countOfQuestion=0;
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	@NotNull
 	@Valid

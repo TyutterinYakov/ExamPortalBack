@@ -1,8 +1,8 @@
 package portal.exception;
 
-public class NotPermissionException extends Exception {
+public class NotPermissionException extends RuntimeException {
 	public NotPermissionException() {
-		super("User dont change!");
+		super();
 	}
 	
 	public NotPermissionException(String msg) {

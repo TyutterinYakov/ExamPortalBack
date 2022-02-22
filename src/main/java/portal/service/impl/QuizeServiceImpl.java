@@ -3,6 +3,7 @@ package portal.service.impl;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import portal.dao.CategoryRepository;
 import portal.dao.QuestionRepository;
 import portal.dao.QuizeRepository;
+import portal.exception.NotFoundException;
 import portal.model.Category;
 import portal.model.Question;
 import portal.model.Quize;
@@ -19,41 +21,29 @@ import portal.service.QuizeService;
 public class QuizeServiceImpl implements QuizeService{
 
 	private QuizeRepository quizeDao;
-	private QuestionRepository questionDao;
 	private CategoryRepository categoryDao;
 	
 	@Autowired
-	public QuizeServiceImpl(QuizeRepository quizeDao, QuestionRepository questionDao, CategoryRepository categoryDao) {
+	public QuizeServiceImpl(QuizeRepository quizeDao, CategoryRepository categoryDao) {
 		super();
 		this.quizeDao = quizeDao;
-		this.questionDao = questionDao;
 		this.categoryDao = categoryDao;
 	}
 
 	@Override
 	public Quize addQuize(Quize quize) {
-		quize.setCountOfQuestion(0); 
 		return quizeDao.save(quize);
 	}
 
 	@Override
 	public Quize updateQuize(Quize quize) {
-		Optional<List<Question>> question = questionDao.findAllByQuize(quize);
-		if(question.isPresent()) {
-			quize.setCountOfQuestion(question.get().size());  //Подсчет вопросов при обновлении теста
-		} else {
-			quize.setCountOfQuestion(0);
-		}
+		getQuizeAdmin(quize.getQuizeId());
 		return quizeDao.save(quize);
 	}
 
 	@Override
-	public void removeQuize(Long id) {
-		Optional<Quize> quizeOptional = quizeDao.findById(id);
-		if(quizeOptional.isPresent()) {
-			quizeDao.delete(quizeOptional.get());
-		}
-		
+	public void removeQuize(Long quizeId) {
+			quizeDao.delete(getQuizeAdmin(quizeId));
 	}
 
 	@Override
@@ -67,24 +57,30 @@ public class QuizeServiceImpl implements QuizeService{
 	}
 
 	@Override
-	public Quize getQuize(Long id) {
-		Optional<Quize> quizeOptional = quizeDao.findByActiveAndQuizeId(true, id);
-		if(quizeOptional.isPresent()) {
-			return quizeOptional.get();
-		}
-		return new Quize();
+	public Quize getQuize(Long quizeId) {
+		return quizeDao.findByActiveAndQuizeId(true, quizeId).orElseThrow(()->
+				new NotFoundException(
+						String.format(
+								"Тест с идентификатором \"%s\" не найден или недоступен",
+								quizeId)
+					)
+				);
 	}
 
 	@Override
 	public List<Quize> getQuiziesOfCategory(Long categoryId) {
-		Category category = new Category();
-		category.setCategoryId(categoryId);
-		List<Quize> quizies = new LinkedList<>();
-		Optional<List<Quize>> listOptional = quizeDao.findAllByCategoryAndActive(category, true);
-		if(listOptional.isPresent()) {
-			quizies = listOptional.get();
-		}
-		return quizies;
+		Category category = categoryDao.findById(categoryId).orElseThrow(()->
+						new NotFoundException(
+								String.format(
+									"Категория с идентификатором \"%s\" не найдена",
+									categoryId))
+						);
+		return category
+				.getQuizies()
+					.stream()
+					.filter((q)->
+						q.isActive())
+				.collect(Collectors.toList());
 	}
 	@Override
 	public List<Quize> getQuiziesOfCategoryAll(Long categoryId) {
@@ -98,12 +94,13 @@ public class QuizeServiceImpl implements QuizeService{
 	}
 
 	@Override
-	public Quize getQuizeAdmin(Long id) {
-		Optional<Quize> quizeOptional = quizeDao.findById(id);
-		if(quizeOptional.isPresent()) {
-			return quizeOptional.get();
-		}
-		return new Quize();
+	public Quize getQuizeAdmin(Long quizeId) {
+		return quizeDao.findById(quizeId).orElseThrow(()->
+						new NotFoundException(String.format(
+							"Тест с идентификатором \"%s\" не найден", 
+							quizeId)
+						)
+				);
 	}
 	
 

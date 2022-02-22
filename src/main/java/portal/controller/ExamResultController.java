@@ -49,45 +49,27 @@ public class ExamResultController {
 	@GetMapping("/checkUserResult/{quizeId}")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> checkUserResult(@PathVariable("quizeId") Long id, Principal principal) {
-		try {
 		return ResponseEntity.ok(examResultService.checkUserResultExam(principal.getName(), id));
-		} catch(UserNotFoundException ex) {
-			logger.error(principal.getName(), ex);
-			return new ResponseEntity<>("Пользовать с таким ником не найден", HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	@DeleteMapping("/examResult/{answerId}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public void deleteUserResult(@PathVariable("answerId") Long id){
+	public ResponseEntity<?> deleteUserResult(@PathVariable("answerId") Long id){
 		examResultService.removeExamResult(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		
 	}
 	
 	@PostMapping("/eval-quize")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> evalQuize(@RequestBody List<Question> questions, Principal principal) {
-		try {
-		return ResponseEntity.ok(examResultService.getExamResult(principal.getName(), questions));
-		} catch(UserNotFoundException ex) {
-			logger.error(principal.getName(), ex);
-			return new ResponseEntity<>("Пользовать с таким ником не найден", HttpStatus.BAD_REQUEST);
-		} catch(InvalidDataException e) {
-			logger.error(questions.toString(), e);
-			return new ResponseEntity<>("Вопрос не найден", HttpStatus.BAD_REQUEST);
-		} catch (UserFoundException exception) {
-			logger.error(principal.getName(), exception);
-			return new ResponseEntity<>("Вы уже решили этот тест", HttpStatus.FORBIDDEN);
-		}
+		return new ResponseEntity<>(examResultService.getExamResult(
+								principal.getName(), questions), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/checkAllUserResult")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<?> checkAllUserResult(Principal principal){
-		try {
-			return ResponseEntity.ok(examResultService.checkUserAllResultExam(principal.getName()));
-		} catch(UserNotFoundException ex) {
-			logger.error(principal.getName(), ex);
-			return new ResponseEntity<>("Пользовать с таким ником не найден", HttpStatus.BAD_REQUEST);
-		}
+		return ResponseEntity.ok(examResultService.checkUserAllResultExam(principal.getName()));
 	}
 }

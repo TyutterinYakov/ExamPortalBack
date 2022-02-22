@@ -14,4 +14,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long>{
 
 	Optional<List<Question>> findAllByQuize(Quize quizeId);
 
+	Long countByQuize(Quize quize);
+
 }

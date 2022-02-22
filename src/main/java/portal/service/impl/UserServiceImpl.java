@@ -1,8 +1,7 @@
 package portal.service.impl;
 
-import java.io.IOException;
-import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,10 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import portal.dao.UserRepository;
-import portal.exception.NotPermissionException;
+import portal.exception.NotFoundException;
 import portal.exception.UserFoundException;
 import portal.exception.UserNotFoundException;
-import portal.model.Role;
 import portal.model.User;
 import portal.service.UserService;
 import portal.util.UploadAndRemoveImage;
@@ -21,6 +19,8 @@ import portal.util.UploadAndRemoveImage;
 @Service
 public class UserServiceImpl implements UserService{
 
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
 	private UserRepository userDao;
 	private UploadAndRemoveImage imageUtil;
 	
@@ -41,59 +41,42 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User createUser(User user) throws UserFoundException {
 		
-		Optional<User> local = userDao.findByUserName(user.getUserName());
-		if(local.isPresent()) {
-			
-			throw new UserFoundException();
-		}
+		userDao.findByUserName(
+				user.getUserName())
+					.ifPresent((u)->{
+						throw new UserFoundException(
+								String.format(
+										"Пользователь с ником \"%s\" уже зарегистрирован",
+										u.getUserName()));
+						}
+					);
 		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
-		user.setRole(Role.USER);
-		user.setProfile("default.png");
-		userDao.save(user);
-		return user;
+		return userDao.saveAndFlush(user);
 	}
 
 	@Override
 	public User findUserByUserName(String userName){
-		Optional<User> userOptional = userDao.findByUserName(userName);
-		if(userOptional.isPresent()) {
-		return userOptional.get();
-		}
-		return null;
+		return userDao.findByUserName(userName).orElseThrow(()->
+					new NotFoundException("Пользователь не найден"));
 	}
 
 	@Override
 	public void deleteUser(String userName) {
-		Optional<User> userOptional = userDao.findByUserName(userName);
-		if(userOptional.isPresent()) {
-			userDao.deleteById(userOptional.get().getUserId());
-		}
+		userDao.deleteById(findUserByUserName(userName).getUserId());
 	}
 
 	@Override
-	public User updateUser(String name, User user) throws NotPermissionException, UserNotFoundException {
-		
-		Optional<User> userOptional = userDao.findByUserName(name);
-		if(userOptional.isPresent()) {
-			if(!name.equals(user.getUserName())) {
-				throw new NotPermissionException();
-			}
-			User us = userOptional.get();
-			us=user;
-			us.setFirstName(user.getFirstName());
-			us.setLastName(user.getLastName());
-			us.setPhone(user.getPhone());
-			us.setEmail(user.getEmail());
-			
-			userDao.save(us);
-			
-			return us;
-		}
-		throw new UserNotFoundException();
+	public User updateUser(String userName, User user) {
+		User userOld = findUserByUserName(userName);
+		userOld.setFirstName(user.getFirstName());
+		userOld.setLastName(user.getLastName());
+		userOld.setPhone(user.getPhone());
+		userOld.setEmail(user.getEmail());
+		return userDao.saveAndFlush(userOld);
 	}
 
 	@Override
-	public void addImageProfile(String name, MultipartFile file) throws IOException, UserNotFoundException {
+	public void addImageProfile(String name, MultipartFile file) {
 		User user = getUserByUsername(name);
 		String imageName = imageUtil.uploadImage(file, "images/profile");
 		imageUtil.deleteImage(user.getProfile(), "images/profile/");
@@ -102,11 +85,13 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	@Override
-	public byte[] getImageProfile(String name) throws UserNotFoundException, IOException {
-		User user = getUserByUsername(name);
-		return imageUtil.getImage(user.getProfile(), "images/profile/");
+	public byte[] getImageProfile(String name) {
+		return imageUtil.getImage(
+					getUserByUsername(name)
+					.getProfile(),
+					"images/profile/"
+				);
 	}
-	
 	
 	private User getUserByUsername(String userName) throws UserNotFoundException {
 		return userDao.findByUserName(userName).orElseThrow(()->

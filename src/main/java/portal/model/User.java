@@ -54,9 +54,9 @@ public class User{
 	private String phone;
 	@Column(name="enabled")
 	private boolean enabled=true;
-	private String profile;
+	private String profile="default.png";
 	@Enumerated(value = EnumType.STRING)
-	private Role role;
+	private Role role = Role.USER;
 	@JsonIgnore
 	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE, fetch=FetchType.EAGER)
 	private List<ExamResult> results = new LinkedList<>();

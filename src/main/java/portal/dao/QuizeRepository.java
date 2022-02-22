@@ -23,6 +23,8 @@ public interface QuizeRepository extends JpaRepository<Quize, Long>{
 
 	Optional<List<Quize>> findAllByCategory(Category category);
 
+	Optional<Quize> findByQuizeIdAndActive(Long quizeId, boolean b);
+
 	
 
 

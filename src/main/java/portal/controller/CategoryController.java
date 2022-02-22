@@ -41,27 +41,19 @@ public class CategoryController {
 		this.categoryService = categoryService;
 	}
 
-
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
 	public ResponseEntity<?> addCategory(@RequestBody @Valid Category cat, BindingResult result) {
-		try {
 		if(result.hasErrors()) {
-			throw new InvalidDataException();
+			throw new InvalidDataException("Поля не соответствуют всем условиям");
 		}
-		Category category = categoryService.addCategory(cat);
-		return ResponseEntity.ok(category);
-		} catch(InvalidDataException ex) {
-			logger.error(cat.toString(), ex);
-			return new ResponseEntity<>("Ошибка при вводе данных категории", HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(categoryService.addCategory(cat),
+				HttpStatus.CREATED);
 	}
-	
 	
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:read')")
 	public ResponseEntity<Category> getCategory(@PathVariable("id") Long id) {
-		
 		return ResponseEntity.ok(categoryService.getCategory(id));
 	}
 	
@@ -72,23 +64,21 @@ public class CategoryController {
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> updateCategory(@RequestBody @Valid Category category, BindingResult result) 
+	public ResponseEntity<?> updateCategory(
+			@RequestBody @Valid Category category, BindingResult result) 
 	{
-		try {
 		if(result.hasErrors()) {
-			throw new InvalidDataException();
+			throw new InvalidDataException("Ошибка ввода данных для обновления категории");
 		}
-			return ResponseEntity.ok(categoryService.updateCategory(category));
-		} catch(InvalidDataException ex) {
-			logger.error(category.toString(), ex);
-			return new ResponseEntity<>("Ошибка ввода данных для обновления категории", HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(categoryService.updateCategory(category),
+				HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public void removeCategory(@PathVariable("id") Long id) {
+	public ResponseEntity<?> removeCategory(@PathVariable("id") Long id) {
 		categoryService.removeCategory(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	

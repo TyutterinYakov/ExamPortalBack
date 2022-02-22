@@ -43,15 +43,7 @@ public class LoginController {
 
 	@PostMapping("/generate-token")
 	public ResponseEntity<?> authenticate(@RequestBody JwtRequest request) throws UserNotFoundException{
-		try {
-			return ResponseEntity.ok(loginService.getAuthenticate(request));
-		} catch(AuthenticationException ex) {
-			logger.error(request.getUserName(), ex);
-			return new ResponseEntity<>("Неправильный логин/пароль", HttpStatus.FORBIDDEN);
-		} catch(UserNotFoundException ex) {
-			logger.error(request.getUserName(), ex);
-			return new ResponseEntity<>("Пользователь с таким логином не найден", HttpStatus.FORBIDDEN);
-		}
+		return ResponseEntity.ok(loginService.getAuthenticate(request));
 	}
 	
 	@PostMapping("/logout")

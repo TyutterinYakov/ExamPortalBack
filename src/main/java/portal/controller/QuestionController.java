@@ -1,6 +1,7 @@
 package portal.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.exception.InvalidDataException;
-import portal.exception.NotPermissionException;
 import portal.model.Question;
 import portal.service.QuestionService;
 
@@ -43,76 +43,56 @@ public class QuestionController {
 
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public Question getQuestion(@PathVariable Long id){
-		
-		return questionService.getQuestion(id);
+	public ResponseEntity<Question> getQuestion(@PathVariable Long id){
+		return ResponseEntity.ok(questionService.getQuestion(id));
 	}
 	
 	
 	@GetMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public List<Question> getAllQuestion(){
-		return questionService.getListQuestion();
+	public ResponseEntity<List<Question>> getAllQuestion(){
+		return ResponseEntity.ok(questionService.getListQuestion());
 	}
 	
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> addQuestion(@RequestBody @Valid Question question, BindingResult result){
-		try {
-			if(result.hasErrors()) {
-				throw new InvalidDataException("Ошибка при вводе данных вопроса");
-			}
-			return ResponseEntity.ok(questionService.addQuestion(question));
-		} catch(InvalidDataException ex) {
-				logger.error(question.toString(), ex);
-				return new ResponseEntity<>("Неверные данные для добавления вопроса", HttpStatus.BAD_REQUEST);
-			}
-		
-		
+	public ResponseEntity<Question> addQuestion(@RequestBody @Valid Question question, BindingResult result){
+		checkValidateForm(result);
+		return new ResponseEntity<>(questionService.addQuestion(question), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> updateQuestion(@RequestBody @Valid Question question, BindingResult result){
-		try {
-		if(result.hasErrors()) {
-				throw new InvalidDataException("Ошибка при вводе данных вопроса");
-			}
-			return ResponseEntity.ok(questionService.updateQuestion(question));
-		} catch(InvalidDataException ex) {
-			logger.error(question.toString(), ex);
-			return new ResponseEntity<>("Неверные данные для обновления вопроса", HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<Question> updateQuestion(@RequestBody @Valid Question question, BindingResult result){
+		checkValidateForm(result);
+		return ResponseEntity.ok(questionService.updateQuestion(question));
 	}
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public void deleteQuestion(@PathVariable Long id) {
+	public ResponseEntity<?> deleteQuestion(@PathVariable Long id) {
 		questionService.removeQuestion(id);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@GetMapping("/quize/{quizeId}")
 	@PreAuthorize("hasAuthority('developers:read')")
-	public ResponseEntity<?> getQuestionOfQuize(@PathVariable("quizeId") Long quizeId){
-		try {
+	public ResponseEntity<Set<Question>> getQuestionOfQuize(@PathVariable("quizeId") Long quizeId){
 		return ResponseEntity.ok(questionService.getQuestionsOfQuize(quizeId));
-		} catch(NotPermissionException ex) {
-			logger.error(quizeId.toString(), ex);
-			return new ResponseEntity<>("Доступ к тесту и этим вопросам закрыт" , HttpStatus.FORBIDDEN);
-		} catch( InvalidDataException e) {
-			logger.error(quizeId.toString(), e);
-			return new ResponseEntity<>("теста с таким id нет" , HttpStatus.BAD_REQUEST);
-		}
 	}
 	@GetMapping("/quize/all/{quizeId}")
 	@PreAuthorize("hasAuthority('developers:write')")
-	public ResponseEntity<?> getQuestionOfQuizeAdmin(@PathVariable("quizeId") Long quizeId){
-		try {
+	public ResponseEntity<Set<Question>> getQuestionOfQuizeAdmin(@PathVariable("quizeId") Long quizeId){
 		return ResponseEntity.ok(questionService.getAllQuestionsOfQuize(quizeId));
-		} catch(InvalidDataException ex) {
-			logger.error(quizeId.toString(), ex);
-			return new ResponseEntity<>("теста с таким id нет" , HttpStatus.BAD_REQUEST);
+	}
+
+	
+	
+	private boolean checkValidateForm(BindingResult result) {
+		if(result.hasErrors()) {
+			throw new InvalidDataException("Ошибка при вводе данных");
 		}
+		return result.hasErrors();
 	}
 	
 	
