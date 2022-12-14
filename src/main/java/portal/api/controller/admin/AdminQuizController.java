@@ -33,32 +33,32 @@ public class AdminQuizController {
     }
 
 
-//    @GetMapping("{categoryId}/quizzes/any")
-//    @PreAuthorize("hasAuthority('developers:write')")
-//    public ResponseEntity<List<QuizeDto>> getAllByCategoryId(@PathVariable("categoryId") Long categoryId)
-//    {
-//        return ResponseEntity.ok(quizeService.getAnyQuiziesByCategoryId(categoryId));
-//    }
-//
-//
-//    @GetMapping("quizzes/{quizId}/any")
-//    @PreAuthorize("hasAuthority('developers:write')")
-//    public ResponseEntity<QuizeDto> getAnyQuize(@PathVariable("quizeId") Long quizeId) {
-//        return ResponseEntity.ok(quizeService.getQuizeAny(quizeId));
-//    }
-//
-//    @PutMapping("quizzes")
-//    @PreAuthorize("hasAuthority('developers:write')")
-//    public ResponseEntity<QuizeDto> update(@RequestBody @Valid QuizeDto quizeDto) {
-//        return ResponseEntity.ok(quizeService.updateQuize(quizeDto));
-//    }
-//
-//
-//    @GetMapping("quizzes/any")
-//    @PreAuthorize("hasAuthority('developers:write')")
-//    public ResponseEntity<List<QuizeDto>> getAnyQuizies() {
-//        return ResponseEntity.ok(quizeService.getAnyQuizies());
-//    }
+    @GetMapping("{categoryId}/quizzes/any")
+    @PreAuthorize("hasAuthority('developers:write')")
+    public ResponseEntity<List<QuizeDto>> getAllByCategoryId(@PathVariable("categoryId") Long categoryId)
+    {
+        return ResponseEntity.ok(quizeService.getAnyQuiziesByCategoryId(categoryId));
+    }
+
+
+    @GetMapping("quizzes/{quizId}/any")
+    @PreAuthorize("hasAuthority('developers:write')")
+    public ResponseEntity<QuizeDto> getAnyQuize(@PathVariable("quizeId") Long quizeId) {
+        return ResponseEntity.ok(quizeService.getQuizeAny(quizeId));
+    }
+
+    @PutMapping("quizzes")
+    @PreAuthorize("hasAuthority('developers:write')")
+    public ResponseEntity<QuizeDto> update(@RequestBody @Valid QuizeDto quizeDto) {
+        return ResponseEntity.ok(quizeService.updateQuize(quizeDto));
+    }
+
+
+    @GetMapping("quizzes/any")
+    @PreAuthorize("hasAuthority('developers:write')")
+    public ResponseEntity<List<QuizeDto>> getAnyQuizies() {
+        return ResponseEntity.ok(quizeService.getAnyQuizies());
+    }
 
 
 }
