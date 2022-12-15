@@ -1,6 +1,7 @@
 package portal.api.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +14,7 @@ import portal.api.service.CategoryService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/admin/categories")
 @CrossOrigin(origins = "http://localhost:4200/")
 public class AdminCategoryController {
 

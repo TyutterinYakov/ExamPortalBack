@@ -16,7 +16,7 @@ import portal.store.repository.CategoryRepository;
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
 
 	private final CategoryRepository categoryDao;
 	private final CategoryMapper categoryMapper;

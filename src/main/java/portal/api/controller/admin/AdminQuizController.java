@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
-@RequestMapping("/categories")
+@RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
 public class AdminQuizController {
 
@@ -35,16 +35,16 @@ public class AdminQuizController {
     }
 
 
-    @GetMapping("{categoryId}/quizzes/any")
+    @GetMapping("{categoryId}/quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<List<QuizDto>> getAllByCategory(@PathVariable("categoryId") long categoryId) {
         return ResponseEntity.ok(quizService.getAllByCategory(categoryId));
     }
 
-    @GetMapping("quizzes/{quizId}/any")
+    @GetMapping("quizzes/{quizId}")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<QuizDto> getById(@PathVariable("quizeId") Long quizeId) {
-        return ResponseEntity.ok(quizService.getById(quizeId));
+    public ResponseEntity<QuizDto> getById(@PathVariable Long quizId) {
+        return ResponseEntity.ok(quizService.getById(quizId));
     }
 
     @PutMapping("quizzes")
@@ -54,7 +54,7 @@ public class AdminQuizController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("quizzes/any")
+    @GetMapping("quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<List<QuizDto>> getAll() {
         return ResponseEntity.ok(quizService.getAll());
