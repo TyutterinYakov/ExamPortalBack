@@ -11,5 +11,5 @@ public interface UserService {
 	void register(UserDtoRequest user);
 	void delete(String email);
 	User findByEmail(String email);
-	public void update(String name, UserDto user);
+	void update(String name, UserDto user);
 }
