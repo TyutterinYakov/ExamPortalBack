@@ -20,6 +20,7 @@ public class Quiz {
 	private String title;
 	@Column(length=1000)
 	private String description;
+	@Builder.Default
 	private boolean active = false;
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)

@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import portal.api.dto.QuizDto;
 import portal.api.dto.QuizRequestDto;
-import portal.api.service.QuizeService;
+import portal.api.service.QuizService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -16,48 +18,46 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AdminQuizController {
 
-    private final QuizeService quizeService;
+    private final QuizService quizService;
 
     @PostMapping("quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<Void> add(@RequestBody @Valid QuizRequestDto quizDto) {
-        quizeService.add(quizDto);
+        quizService.add(quizDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("quizzes/{quizId}")
     @PreAuthorize("hasAuthority('developers:write')")
     public ResponseEntity<Void> deleteById(@PathVariable long quizId) {
-        quizeService.deleteById(quizId);
+        quizService.deleteById(quizId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
     @GetMapping("{categoryId}/quizzes/any")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<List<QuizeDto>> getAllByCategoryId(@PathVariable("categoryId") Long categoryId)
-    {
-        return ResponseEntity.ok(quizeService.getAnyQuiziesByCategoryId(categoryId));
+    public ResponseEntity<List<QuizDto>> getAllByCategory(@PathVariable("categoryId") long categoryId) {
+        return ResponseEntity.ok(quizService.getAllByCategory(categoryId));
     }
-
 
     @GetMapping("quizzes/{quizId}/any")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<QuizeDto> getAnyQuize(@PathVariable("quizeId") Long quizeId) {
-        return ResponseEntity.ok(quizeService.getQuizeAny(quizeId));
+    public ResponseEntity<QuizDto> getById(@PathVariable("quizeId") Long quizeId) {
+        return ResponseEntity.ok(quizService.getById(quizeId));
     }
 
     @PutMapping("quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<QuizeDto> update(@RequestBody @Valid QuizeDto quizeDto) {
-        return ResponseEntity.ok(quizeService.updateQuize(quizeDto));
+    public ResponseEntity<QuizDto> update(@RequestBody @Valid QuizRequestDto quizDto) {
+        quizService.update(quizDto);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
 
     @GetMapping("quizzes/any")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<List<QuizeDto>> getAnyQuizies() {
-        return ResponseEntity.ok(quizeService.getAnyQuizies());
+    public ResponseEntity<List<QuizDto>> getAll() {
+        return ResponseEntity.ok(quizService.getAll());
     }
 
 

@@ -3,138 +3,89 @@ package portal.api.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+import portal.api.dto.QuizDto;
 import portal.api.dto.QuizRequestDto;
 import portal.api.dto.mapper.QuizMapper;
 import portal.api.exception.NotFoundException;
-import portal.api.service.QuizeService;
+import portal.api.service.QuizService;
 import portal.store.entity.Category;
 import portal.store.entity.Quiz;
 import portal.store.repository.CategoryRepository;
 import portal.store.repository.QuizRepository;
 
+import java.util.List;
+
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class QuizServiceImpl implements QuizeService{
+public class QuizServiceImpl implements QuizService {
 
 	private final CategoryRepository categoryRepository;
 	private final QuizRepository quizRepository;
 	private final QuizMapper quizMapper;
 
 	@Override
+	@Transactional
 	public void add(QuizRequestDto quizDto) {
-		Category category = categoryRepository.findById(quizDto.getCategoryId()).orElseThrow(() ->
-				new NotFoundException("Категория с идентификатором " + quizDto.getCategoryId() + " не найдена"));
+		Category category = findCategoryOrThrow(quizDto.getCategoryId());
 		Quiz quiz = quizMapper.toEntity(quizDto, category);
 		quizRepository.save(quiz);
 	}
 
 	@Override
+	@Transactional
 	public void deleteById(long quizId) {
-		quizRepository.findById(quizId).ifPresent(
-				quiz -> quizRepository.deleteById(quizId)
-		);
+		quizRepository.findById(quizId).ifPresent((q) -> quizRepository.deleteById(quizId));
 	}
 
-//	@Override
-//	public QuizeDto updateQuize(QuizeDto quizeDto) {
-//		getQuizeEntityAny(quizeDto.getQuizeId());
-//		return quizeDtoFactory
-//				.toDto(
-//						quizeDao.saveAndFlush(
-//								new QuizeEntity().makeQuizeDtoTo(
-//										quizeDto,
-//										categoryService.getCategoryEntityById(quizeDto.
-//												getCategoryDto()
-//												.getCategoryId())
-//								)
-//						)
-//				);
-//	}
-//
-//	@Override
-//	public void deleteQuizeById(Long quizeId) {
-//		quizeDao.deleteById(getQuizeEntityAny(quizeId).getQuizeId());
-//	}
-//
-//	@Override
-//	public QuizeDto getQuizeAny(Long quizeId) {
-//		return quizeDtoFactory.toDto(quizeDao.findById(quizeId).orElseThrow(()->
-//						new NotFoundException(String.format(
-//							"Тест с идентификатором \"%s\" не найден",
-//							quizeId)
-//						)
-//				));
-//	}
-//
-//	@Override
-//	public List<QuizeDto> getAnyQuizies() {
-//		return quizeDtoFactory.toDto(quizeDao.findAll());
-//	}
-//
-//	@Override
-//	public List<QuizeDto> getAnyQuiziesByCategoryId(Long categoryId) {
-//		return quizeDtoFactory.toDto(
-//				findCategoryById(categoryId)
-//				.getQuizies());
-//	}
-//
-//	private QuizeEntity getQuizeEntityAny(Long quizeId) {
-//		if(quizeId==0||quizeId==null) {
-//			throw new BadRequestException("Поле quizeId равно null или 0");
-//		}
-//		return quizeDao.findById(quizeId).orElseThrow(()->
-//						new NotFoundException(String.format(
-//							"Тест с идентификатором \"%s\" не найден",
-//							quizeId)
-//						)
-//				);
-//	}
-//
-//
-//	//READ
-//
-//	@Override
-//	public List<QuizeDto> getActiveQuiziesByCategoryId(Long categoryId) {
-//		CategoryEntity category = categoryDao.findById(categoryId).orElseThrow(()->
-//		new NotFoundException(
-//				String.format(
-//					"Категория с идентификатором \"%s\" не найдена",
-//					categoryId))
-//		);
-//		return quizeDtoFactory.toDto(category
-//													.getQuizies().stream()
-//													.filter((q)->q.isActive())
-//													.collect(Collectors.toList()));
-//	}
-//
-//	@Override
-//	public List<QuizeDto> getActiveQuizies() {
-//		return quizeDtoFactory.toDto(quizeDao.findAllByActive(true));
-//	}
-//
-//	@Override
-//	public QuizeDto getActiveQuize(Long quizeId) {
-//		return quizeDtoFactory.toDto(quizeDao.findByActiveAndQuizeId(true, quizeId).orElseThrow(()->
-//		new NotFoundException(
-//				String.format(
-//						"Тест с идентификатором \"%s\" не найден или недоступен",
-//						quizeId)
-//			)
-//		));
-//	}
-//
-//
-//	private CategoryEntity findCategoryById(Long categoryId) {
-//		return categoryDao.findById(categoryId).orElseThrow(()->
-//			new NotFoundException(
-//				String.format(
-//					"Категория с идентификатором \"%s\" не найдена",
-//					categoryId))
-//			);
-//	}
+	@Override
+	public List<QuizDto> getAllByCategory(long categoryId) {
+		return quizMapper.toDto(quizRepository.findAllByCategoryId(categoryId));
+	}
+
+	@Override
+	public QuizDto getById(Long quizId) {
+		return quizMapper.toDto(findByIdOrThrow(quizId));
+	}
+
+	@Override
+	@Transactional
+	public void update(QuizRequestDto quizDto) {
+		Quiz quiz = findByIdOrThrow(quizDto.getId());
+		Long categoryId = quizDto.getCategoryId();
+		if (categoryId != null) {
+			Category category = findCategoryOrThrow(categoryId);
+			quiz.setCategory(category);
+		}
+		String description = quizDto.getDescription();
+		if (description != null && !description.isBlank()) {
+			quiz.setDescription(description);
+		}
+		String title = quizDto.getTitle();
+		if (title != null && !title.isBlank()) {
+			quiz.setTitle(title);
+		}
+		Boolean active = quizDto.getActive();
+		if (active != null) {
+			quiz.setActive(active);
+		}
+
+	}
+
+	@Override
+	public List<QuizDto> getAll() {
+		return quizMapper.toDto(quizRepository.findAll());
+	}
 
 
+	private Category findCategoryOrThrow(long categoryId) {
+		return categoryRepository.findById(categoryId).orElseThrow(() ->
+				new NotFoundException("Категория с идентификатором " + categoryId + " не найдена"));
+	}
 
-
-
+	private Quiz findByIdOrThrow(long quizId) {
+		return quizRepository.findById(quizId).orElseThrow(() ->
+				new NotFoundException("Тест с идентификатором " + quizId + " не найден"));
+	}
 }

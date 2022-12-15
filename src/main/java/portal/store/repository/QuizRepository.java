@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
+    List<Quiz> findAllByCategoryId(long categoryId);
 
 //	List<Quiz> findAllByCategoryAndActive(Category ct, boolean active);
 //
