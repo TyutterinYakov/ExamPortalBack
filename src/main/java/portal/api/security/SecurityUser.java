@@ -6,9 +6,10 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import portal.store.entity.User;
 
 
-public class SecurityUser  implements UserDetails{
+public class SecurityUser implements UserDetails{
 	
 	private final String username;
 	private final String password;
@@ -59,9 +60,9 @@ public class SecurityUser  implements UserDetails{
 		return isActive;
 	}
 	
-	public static UserDetails fromUser(portal.store.entity.UserEntity user) {
+	public static UserDetails fromUser(User user) {
 		return new org.springframework.security.core.userdetails.User(
-				user.getUserName(),
+				user.getEmail(),
 				user.getPassword(),
 				user.isEnabled(),
 				user.isEnabled(),

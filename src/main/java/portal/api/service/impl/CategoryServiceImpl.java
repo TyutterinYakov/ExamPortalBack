@@ -2,93 +2,60 @@ package portal.api.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import portal.api.dto.CategoryDto;
-import portal.api.dto.factory.CategoryDtoFactory;
-import portal.api.exception.BadRequestException;
+import portal.api.dto.mapper.CategoryMapper;
 import portal.api.exception.NotFoundException;
 import portal.api.service.CategoryService;
-import portal.store.entity.CategoryEntity;
+import portal.store.entity.Category;
 import portal.store.repository.CategoryRepository;
+
+@Transactional(readOnly = true)
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService{
 
 	private final CategoryRepository categoryDao;
-	private final CategoryDtoFactory categoryDtoFactory;
-	
-	@Autowired
-	public CategoryServiceImpl(CategoryRepository categoryDao, CategoryDtoFactory categoryDtoFactory) {
-		super();
-		this.categoryDao = categoryDao;
-		this.categoryDtoFactory = categoryDtoFactory;
-	}
+	private final CategoryMapper categoryMapper;
 
-	//WRITE
-	
 	@Override
-	public void removeCategoryById(Long categoryId) {
-		categoryDao.deleteById(
-				getCategoryById(categoryId)
-						.getCategoryId());
-	}
-	
-	@Override
-	public CategoryDto addCategory(CategoryDto categoryDto) {
-		return categoryDtoFactory.createCategoryDto(
-				categoryDao.saveAndFlush(
-						new CategoryEntity()
-							.makeCategoryDto(categoryDto))
-				);
+	@Transactional
+	public void deleteById(long categoryId) {
+		categoryDao.findById(categoryId).ifPresent((c) -> categoryDao.deleteById(c.getId()));
 	}
 
 	@Override
-	public CategoryDto updateCategory(CategoryDto categoryDto) {
-		getCategoryById(categoryDto.getCategoryId());
-		return categoryDtoFactory
-				.createCategoryDto(
-						categoryDao.saveAndFlush(
-							new CategoryEntity()
-								.makeCategoryDto(categoryDto)));
-	}
-	
-	//READ
-
-	@Override
-	public List<CategoryDto> getAllCategory() {
-		return categoryDtoFactory.createListCategoryDto(categoryDao.findAll());
+	@Transactional
+	public void add(CategoryDto categoryDto) {
+		Category category = categoryMapper.toEntity(categoryDto);
+		categoryDao.save(category);
 	}
 
 	@Override
-	public CategoryDto getCategoryById(Long categoryId) {
-		if(categoryId==null||categoryId==0) {
-			throw new BadRequestException("Поле categoryId пусто или равно нулю");
+	@Transactional
+	public void update(CategoryDto categoryDto) {
+		Category category = categoryDao.findById(categoryDto.getId()).orElseThrow(() ->
+				new NotFoundException("Категория с идентификатором " + categoryDto.getId() + " не найдена"));
+		String newTitle = categoryDto.getTitle();
+		if (newTitle != null  && !newTitle.isBlank()) {
+			category.setTitle(newTitle);
 		}
-		return categoryDtoFactory
-				.createCategoryDto(categoryDao.findById(categoryId).orElseThrow(()->
-					new NotFoundException(
-						String.format(
-								"Категория с идентификатором \"%s\" не найдена", 
-								categoryId)
-					))
-				);
+		String newDescription = categoryDto.getDescription();
+		category.setDescription(newDescription);
 	}
 
 	@Override
-	public CategoryEntity getCategoryEntityById(Long categoryId) {
-		if(categoryId==null||categoryId==0) {
-			throw new BadRequestException("Поле categoryId пусто или равно нулю");
-		}
-		return categoryDao.findById(categoryId).orElseThrow(()->
-								new NotFoundException(
-										String.format(
-												"Категория с идентификатором \"%s\" не найдена", 
-												categoryId)
-									)
-								);
+	public List<CategoryDto> getAll() {
+		return categoryMapper.toDto(categoryDao.findAll());
 	}
 
+	@Override
+	public CategoryDto getById(long categoryId) {
+		return categoryMapper.toDto(categoryDao.findById(categoryId).orElseThrow(() ->
+				new NotFoundException(String.format("Категория с идентификатором \"%s\" не найдена", categoryId))));
+	}
 
-	
 }

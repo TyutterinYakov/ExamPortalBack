@@ -1,17 +1,15 @@
 package portal.api.service;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import portal.api.dto.UserDto;
-import portal.store.entity.UserEntity;
+import portal.api.dto.UserDtoRequest;
+import portal.store.entity.User;
 
 public interface UserService {
 
-	public UserEntity findUserByUserName(String userName);
-	public void deleteUser(String userName);
-	public UserDto createUser(UserEntity user);
-	public UserDto updateUser(String name, UserDto user);
-	public void addImageProfile(String name, MultipartFile file);
-	public byte[] getImageProfile(String name);
-	
+
+	void register(UserDtoRequest user);
+	void delete(String email);
+	User findByEmail(String email);
+	void update(String name, UserDto user);
 }

@@ -1,5 +1,6 @@
 package portal.api.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,15 +20,10 @@ import portal.api.security.JwtConfigurer;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final JwtConfigurer jwtConfigurer;
-	
-	@Autowired
-	public SecurityConfig(JwtConfigurer jwtConfigurer) {
-		super();
-		this.jwtConfigurer = jwtConfigurer;
-	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception { //SPRING CONFIG
@@ -52,11 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception{
 		return super.authenticationManagerBean();
 	}
-	
-	
+
 	@Bean
-	protected PasswordEncoder passwordEncoder() {
+	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder(12);
 	}
+	
 	
 }

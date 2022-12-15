@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,33 +13,25 @@ import org.springframework.stereotype.Service;
 
 import portal.api.security.JwtTokenProvider;
 import portal.api.service.UserService;
-import portal.store.entity.JwtRequest;
-import portal.store.entity.UserEntity;
+import portal.api.dto.JwtRequest;
+import portal.store.entity.User;
 
 @Service
+@RequiredArgsConstructor
 public class LoginServiceImpl {
 	
 	private final AuthenticationManager authManager;
-	private UserService userService;
-	private JwtTokenProvider jwtProvider;
+	private final UserService userService;
+	private final JwtTokenProvider jwtProvider;
 	
-	@Autowired
-	public LoginServiceImpl(AuthenticationManager authManager, UserService userService, JwtTokenProvider jwtProvider) {
-		super();
-		this.authManager = authManager;
-		this.userService = userService;
-		this.jwtProvider = jwtProvider;
-	}
-	
-	
-	
+
 	@Transactional
 	public Map<Object, Object> getAuthenticate(JwtRequest request) {
 			authManager.authenticate(
 					new UsernamePasswordAuthenticationToken(
 											request.getUserName(),
 											request.getPassword()));
-			UserEntity user = userService.findUserByUserName(request.getUserName());
+			User user = userService.findByEmail(request.getUserName());
 			String token = jwtProvider.createToken(
 					request.getUserName(),
 					user.getRole()

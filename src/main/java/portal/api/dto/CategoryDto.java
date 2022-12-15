@@ -1,43 +1,30 @@
 package portal.api.dto;
 
-import javax.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import portal.api.dto.group.Create;
+import portal.api.dto.group.Update;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CategoryDto {
 
-	private Long categoryId;
-	@NotEmpty
+	@Null(groups = Create.class)
+	@NotNull(groups = Update.class)
+	private Long id;
+	@NotBlank(groups = Create.class)
+	@Size(max = 75, groups = {Create.class, Update.class})
 	private String title;
-	@NotEmpty
+	@Size(max = 1000, groups = {Create.class, Update.class})
 	private String description;
-	
-	public CategoryDto() {
-		super();
-	}
-	public CategoryDto(Long categoryId, String title, String description) {
-		super();
-		this.categoryId = categoryId;
-		this.title = title;
-		this.description = description;
-	}
-	public Long getCategoryId() {
-		return categoryId;
-	}
-	public void setCategoryId(Long categoryId) {
-		this.categoryId = categoryId;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
 	
 }
