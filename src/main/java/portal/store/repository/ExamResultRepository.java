@@ -10,7 +10,6 @@
 //import portal.store.entity.QuizeEntity;
 //import portal.store.entity.User;
 //
-//@Repository
 //public interface ExamResultRepository extends JpaRepository<ExamResult, Long> {
 //
 //	List<ExamResult> findAllByQuize(QuizeEntity quize);

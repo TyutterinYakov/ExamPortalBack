@@ -9,6 +9,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import portal.api.exception.JwtAuthenticationException;
 
 @Component
+@Slf4j
 public class JwtTokenFilter extends GenericFilterBean {
 
 	private final JwtTokenProvider tokenProvider;
@@ -34,6 +36,7 @@ public class JwtTokenFilter extends GenericFilterBean {
 		
 		try {
 		if(token!=null&&tokenProvider.validateToken(token)) {
+			log.info(token);
 			Authentication auth = tokenProvider.getAuthentication(token);
 			if(auth!=null) {
 				SecurityContextHolder.getContext().setAuthentication(auth);

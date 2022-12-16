@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import portal.api.dto.QuizDto;
 import portal.api.dto.QuizRequestDto;
+import portal.api.dto.group.Create;
+import portal.api.dto.group.Update;
 import portal.api.service.QuizService;
 
 import javax.validation.Valid;
@@ -22,7 +25,7 @@ public class AdminQuizController {
 
     @PostMapping("quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<Void> add(@RequestBody @Valid QuizRequestDto quizDto) {
+    public ResponseEntity<Void> add(@RequestBody @Validated(Create.class) QuizRequestDto quizDto) {
         quizService.add(quizDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -49,7 +52,7 @@ public class AdminQuizController {
 
     @PutMapping("quizzes")
     @PreAuthorize("hasAuthority('developers:write')")
-    public ResponseEntity<QuizDto> update(@RequestBody @Valid QuizRequestDto quizDto) {
+    public ResponseEntity<QuizDto> update(@RequestBody @Validated(Update.class) QuizRequestDto quizDto) {
         quizService.update(quizDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

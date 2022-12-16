@@ -16,7 +16,7 @@ public class ExceptionController {
 
 	@ExceptionHandler({BadRequestException.class, MethodArgumentNotValidException.class,
 			ConstraintViolationException.class})
-	public ResponseEntity<String> badRequestException(RuntimeException ex){
+	public ResponseEntity<String> badRequestException(Exception ex){
 		log.info(ex.getMessage());
 		return new ResponseEntity<>(ex.getMessage() ,HttpStatus.BAD_REQUEST);
 	}

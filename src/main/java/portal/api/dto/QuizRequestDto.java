@@ -30,4 +30,10 @@ public class QuizRequestDto {
     @NotNull(groups = {Create.class})
     private Long categoryId;
 
+    public QuizRequestDto(String title, String description, Boolean active, Long categoryId) {
+        this.title = title;
+        this.description = description;
+        this.active = active;
+        this.categoryId = categoryId;
+    }
 }

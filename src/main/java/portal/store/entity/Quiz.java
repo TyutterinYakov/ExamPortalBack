@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 import lombok.*;
 
+
 @Entity
 @Table(name="quizzes")
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class Quiz {
 	private String description;
 	@Builder.Default
 	private boolean active = false;
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
 
