@@ -13,7 +13,6 @@ import ru.pet.portal.store.repository.CategoryRepository;
 import java.util.List;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -52,6 +51,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public List<Category> getAll(int from, int size) {
-		return categoryRepository.findAll(PageRequest.of(from, size, Sort.Direction.ASC)).getContent();
+		return categoryRepository.findAll(PageRequest.of(from, size, Sort.by("title"))).getContent();
 	}
 }

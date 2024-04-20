@@ -18,14 +18,15 @@ import java.util.UUID;
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin(origins = "${exam.portal.front-url}")
 public class PrivateCategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
 
     @GetMapping("{categoryId}")
-    public CategoryResponseDto getById(@PathVariable("categoryId") UUID categoryId) {
-        final Category category = categoryService.getById(categoryId);
+    public CategoryResponseDto getById(@PathVariable("categoryId") String categoryId) {
+        final Category category = categoryService.getById(UUID.fromString(categoryId));
         return categoryMapper.toDto(category);
     }
 

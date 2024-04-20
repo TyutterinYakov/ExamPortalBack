@@ -10,4 +10,8 @@ import lombok.experimental.Accessors;
 public class UserResponseDto {
     private String email;
     private String role;
+    private boolean enabled;
+    private String firstName;
+    private String lastName;
+    private byte[] imageProfile;
 }

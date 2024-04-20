@@ -2,28 +2,41 @@ package ru.pet.portal.api.controller.priv;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.pet.portal.api.controller.dto.mapper.UserMapper;
 import ru.pet.portal.api.controller.dto.user.UserResponseDto;
+import ru.pet.portal.api.service.ImageService;
 import ru.pet.portal.store.entity.User;
 
-import java.security.Principal;
-
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @CrossOrigin(origins = "${exam.portal.front-url}")
 @RequiredArgsConstructor
 class PrivateUserController {
 
-    @GetMapping("/current-user")
-    public UserResponseDto getCurrentUser(Principal principal) {
-        User user = (User)((UsernamePasswordAuthenticationToken) principal).getPrincipal();
-        return new UserResponseDto().setRole(user.getRole().name()).setEmail(user.getEmail());
+    private final UserMapper userMapper;
+    private final ImageService imageService;
+
+    @GetMapping("/me")
+    public UserResponseDto getCurrentUser(UsernamePasswordAuthenticationToken token) {
+        final User user = (User) token.getPrincipal();
+        return userMapper.toDto(user);
     }
 
+    @GetMapping("/image-profile")
+    public byte[] getImageProfile(UsernamePasswordAuthenticationToken token) {
+        final User user = (User) token.getPrincipal();
+        return imageService.getImageProfile(user.getProfileImage());
+    }
 
-
+    @PutMapping("/image-profile-update")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateImageProfile(@RequestParam("image") MultipartFile file,
+                                   UsernamePasswordAuthenticationToken token){
+        User user = (User) token.getPrincipal();
+        imageService.updateImageProfile(user, file);
+    }
 }

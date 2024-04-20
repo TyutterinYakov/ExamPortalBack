@@ -1,9 +1,10 @@
 package ru.pet.portal.api.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import ru.pet.portal.store.entity.User;
 
 public interface ImageService {
-    void update(String email, MultipartFile file);
+    byte[] getImageProfile(String imageName);
 
-    byte[] get(String email);
+    void updateImageProfile(User user, MultipartFile file);
 }

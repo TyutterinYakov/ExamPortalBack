@@ -20,10 +20,10 @@ spring:
 exam:
   portal:
     front-url: http://localhost:4200/
-    image-upload-directory: images/
+    image-upload-directory: src/main/resources/images/profile
     image-default: default.png
     jwt-header: Authorization
     jwt-secret: secret4356789654324567865432567854324567854fsdfdsfdsfdsdfsfdfdswqeq21wasdsaadsdagfderew2rgf
-    jwt-expiration: 604800
+    jwt-expiration: 60480033
 
 
