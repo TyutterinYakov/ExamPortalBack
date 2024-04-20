@@ -12,6 +12,9 @@ public class ExamPortalConfiguration {
     private String frontUrl;
     private String imageUploadDirectory;
     private String imageDefault;
+    private String jwtHeader;
+    private String jwtSecret;
+    private int jwtExpiration;
 
     @PostConstruct
     void info() {

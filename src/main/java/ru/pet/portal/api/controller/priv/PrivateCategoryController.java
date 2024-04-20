@@ -15,7 +15,6 @@ import java.util.UUID;
 
 
 @RestController
-@CrossOrigin(origins = "${exam.portal.front-url}")
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
 @Validated

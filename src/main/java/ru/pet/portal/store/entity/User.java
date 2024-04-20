@@ -3,7 +3,11 @@ package ru.pet.portal.store.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,7 +27,32 @@ public class User {
     private String email;
     private boolean enabled = true;
     private String profileImage = "default.png";
-//    @Enumerated(value = EnumType.STRING)
-//    private Role role;
+    @Enumerated(value = EnumType.STRING)
+    private Role role = Role.USER;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton((GrantedAuthority) () -> role.name());
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
 }

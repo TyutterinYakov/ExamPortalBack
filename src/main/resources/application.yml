@@ -22,5 +22,8 @@ exam:
     front-url: http://localhost:4200/
     image-upload-directory: images/
     image-default: default.png
+    jwt-header: Authorization
+    jwt-secret: secret4356789654324567865432567854324567854fsdfdsfdsfdsdfsfdfdswqeq21wasdsaadsdagfderew2rgf
+    jwt-expiration: 604800
 
 

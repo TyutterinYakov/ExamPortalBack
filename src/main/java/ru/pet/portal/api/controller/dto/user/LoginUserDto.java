@@ -13,21 +13,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDto {
-    @NotEmpty
+public class LoginUserDto {
+
     @Email
+    @NotEmpty
     @Size(min = 7, max = 30)
     private String email;
-
     @Size(min = 4, max = 30)
     @NotBlank
     private String password;
-
-    @Size(min = 2, max = 30)
-    @NotBlank
-    private String firstName;
-
-    @Size(min = 2, max = 30)
-    @NotBlank
-    private String lastName;
 }
