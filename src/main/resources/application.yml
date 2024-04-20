@@ -1,20 +1,22 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/testproject
-    username: postgres
-    password: login456456
+    url: jdbc:postgresql://localhost:5432/test_portal?currentSchema=test_portal
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    create-schemas: true
+    enabled: true
+    locations: classpath:/db/data_migration,classpath:/db/ddl_migration
 
-jwt:
-  header: Authorization
-  secret: secret
-  expiration: 604800
 exam:
   portal:
     front-url: http://localhost:4200/

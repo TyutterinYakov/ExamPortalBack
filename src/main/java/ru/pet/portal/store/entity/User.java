@@ -2,17 +2,16 @@ package ru.pet.portal.store.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.UUID;
-
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Accessors(chain = true)
 public class User {
 
     @Id
@@ -22,9 +21,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private String phone;
-    private Boolean enabled;
-    private String profileImage;
+    private boolean enabled = true;
+    private String profileImage = "default.png";
 //    @Enumerated(value = EnumType.STRING)
 //    private Role role;
 
