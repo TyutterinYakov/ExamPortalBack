@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testproject
+    username: postgres
+    password: login456456
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  header: Authorization
+  secret: secret
+  expiration: 604800
+exam:
+  portal:
+    front-url: http://localhost:4200/
+    image-upload-directory: images/
+    image-default: default.png
+
+
