@@ -1,32 +1,28 @@
-//package portal.api.controller.priv;
-//
-//import java.util.List;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.CrossOrigin;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import portal.api.dto.QuestionDto;
-//import portal.api.service.QuestionService;
-//
-//@RequestMapping("/api/quizies")
-//@RestController
-//@CrossOrigin(origins = "http://localhost:4200/")
-//@RequiredArgsConstructor
-//public class PrivateQuestionController {
-//
-//	private final QuestionService questionService;
-//
-//	@GetMapping("{quizeId}/questions")
-//	@PreAuthorize("hasAuthority('developers:read')")
-//	public ResponseEntity<List<QuestionDto>> getByQuizeId(@PathVariable("quizeId") Long quizeId){
-//		return ResponseEntity.ok(questionService.getQuestionsOfQuize(quizeId));
-//	}
-//
-//
-//}
+package ru.pet.portal.api.controller.priv;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import ru.pet.portal.api.controller.dto.mapper.QuestionMapper;
+import ru.pet.portal.api.controller.dto.question.QuestionResponseDto;
+import ru.pet.portal.api.service.QuestionService;
+
+import java.util.List;
+import java.util.UUID;
+
+@RequestMapping("/api/quizzes")
+@RestController
+@CrossOrigin(origins = "${exam.portal.front-url}")
+@RequiredArgsConstructor
+public class PrivateQuestionController {
+
+	private final QuestionService questionService;
+    private final QuestionMapper questionMapper;
+
+	@GetMapping("{quizId}/questions")
+	public List<QuestionResponseDto> getByQuizIdAndActiveQuiz(@PathVariable UUID quizId){
+		return questionService.getByQuizIdAndActiveQuiz(quizId).stream().map(questionMapper::toDto).toList();
+	}
+
+
+}

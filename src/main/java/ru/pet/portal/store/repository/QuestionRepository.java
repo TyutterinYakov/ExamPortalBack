@@ -37,4 +37,8 @@ public interface QuestionRepository extends JpaRepository<Question, UUID> {
 
     @Query("select q from Question q where q.quiz.id = :quizId")
     List<Question> getAllByQuizId(UUID quizId, Pageable pageable);
+
+    @Query("select q from Question q where q.quiz.id = :quizId and q.quiz.active = :active")
+    List<Question> getByQuizIdAndActiveQuiz(UUID quizId, boolean active);
+
 }

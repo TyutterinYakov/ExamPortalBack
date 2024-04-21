@@ -2,6 +2,7 @@ package ru.pet.portal.api.service;
 
 import ru.pet.portal.store.entity.Question;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,4 +20,5 @@ public interface QuestionService {
 
     List<Question> getAllByQuizId(UUID quizId, int from, int size);
 
+    List<Question> getByQuizIdAndActiveQuiz(UUID quizId);
 }

@@ -2,6 +2,7 @@ package ru.pet.portal.api.service;
 
 import ru.pet.portal.store.entity.Quiz;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,4 +20,10 @@ public interface QuizService {
 
 
     List<Quiz> getAll(int from, int size);
+
+    Quiz getByIdAndActive(UUID quizId);
+
+    List<Quiz> getAllByActive(int from, int size);
+
+    List<Quiz> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size);
 }

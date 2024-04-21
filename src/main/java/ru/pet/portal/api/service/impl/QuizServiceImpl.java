@@ -80,6 +80,32 @@ public class QuizServiceImpl implements QuizService {
         return quizzes;
     }
 
+    @Override
+    public Quiz getByIdAndActive(UUID quizId) {
+        final Quiz quiz = quizRepository.findByIdAndActiveWithThrow(quizId, true);
+        setQuizSpecification(quiz);
+        return quiz;
+    }
+
+    @Override
+    public List<Quiz> getAllByActive(int from, int size) {
+        final List<Quiz> quizzes = quizRepository.findAllByActive(
+                PageRequest.of(from, size, Sort.by("title")), true);
+        setQuizSpecification(quizzes);
+        return quizzes;
+    }
+
+    @Override
+    public List<Quiz> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size) {
+        final List<Quiz> quizzes = quizRepository.findAllByCategoryIdAndActive(categoryId,
+                PageRequest.of(from, size, Sort.by("title")), true);
+        setQuizSpecification(quizzes);
+        return quizzes;
+    }
+
+    private void setQuizSpecification(Quiz quiz) {
+        setQuizSpecification(List.of(quiz));
+    }
 
     private void setQuizSpecification(List<Quiz> quizzes) {
         final Map<UUID, QuizSpecification> quizSpecificationByQuizId =

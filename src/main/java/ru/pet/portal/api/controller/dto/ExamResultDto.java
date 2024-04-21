@@ -11,7 +11,6 @@
 //	private int invalidQuestion;
 //	private int skipQuestion;
 //	private int countPoints;
-//    private QuizeDto quizeDto;
 //    private Map<String, Map<String, String>> questionsAndGivenAnswer;
 //
 //

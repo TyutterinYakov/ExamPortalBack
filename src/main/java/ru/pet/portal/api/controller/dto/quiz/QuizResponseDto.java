@@ -20,6 +20,7 @@ public class QuizResponseDto {
 	private boolean active;
 	private long maxMarks;
 	private long countOfQuestion;
+	private long time;
 	private CategoryResponseDto category;
 
 }
