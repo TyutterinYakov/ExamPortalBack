@@ -31,15 +31,15 @@ public class AdminCategoryController {
 
     @PutMapping("{categoryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void update(@PathVariable("categoryId") String categoryId,
-                                       @RequestBody @Validated(Update.class) CategoryRequestDto categoryDto) {
+    public void update(@PathVariable("categoryId") UUID categoryId,
+                       @RequestBody @Validated(Update.class) CategoryRequestDto categoryDto) {
         final Category category = categoryMapper.toEntity(categoryDto);
-        categoryService.update(UUID.fromString(categoryId), category);
+        categoryService.update(categoryId, category);
     }
 
     @DeleteMapping("{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable("categoryId") String categoryId) {
-        categoryService.deleteById(UUID.fromString(categoryId));
+    public void deleteById(@PathVariable("categoryId") UUID categoryId) {
+        categoryService.deleteById(categoryId);
     }
 }

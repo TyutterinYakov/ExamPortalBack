@@ -1,91 +1,72 @@
-//package portal.api.service.impl;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//
-//import org.springframework.transaction.annotation.Transactional;
-//import portal.api.controller.dto.QuizDto;
-//import portal.api.controller.dto.QuizRequestDto;
-//import portal.api.controller.dto.mapper.QuizMapper;
-//import portal.api.exception.NotFoundException;
-//import portal.api.service.QuizService;
-//import portal.store.entity.Category;
-//import portal.store.entity.Quiz;
-//import portal.store.repository.CategoryRepository;
-//import portal.store.repository.QuizRepository;
-//
-//import java.util.List;
-//
-//@Service
-//@Transactional(readOnly = true)
-//@RequiredArgsConstructor
-//public class QuizServiceImpl implements QuizService {
-//
-//	private final CategoryRepository categoryRepository;
-//	private final QuizRepository quizRepository;
-//	private final QuizMapper quizMapper;
-//
-//	@Override
-//	@Transactional
-//	public void add(QuizRequestDto quizDto) {
-//		Category category = findCategoryOrThrow(quizDto.getCategoryId());
-//		Quiz quiz = quizMapper.toEntity(quizDto, category);
-//		quizRepository.save(quiz);
-//	}
-//
-//	@Override
-//	@Transactional
-//	public void deleteById(long quizId) {
-//		quizRepository.findById(quizId).ifPresent((q) -> quizRepository.deleteById(quizId));
-//	}
-//
-//	@Override
-//	public List<QuizDto> getAllByCategory(long categoryId) {
-//		return quizMapper.toDto(quizRepository.findAllByCategoryId(categoryId));
-//	}
-//
-//	@Override
-//	public QuizDto getById(Long quizId) {
-//		return quizMapper.toDto(findByIdOrThrow(quizId));
-//	}
-//
-//	@Override
-//	@Transactional
-//	public void update(QuizRequestDto quizDto) {
-//		Quiz quiz = findByIdOrThrow(quizDto.getId());
-//		Long categoryId = quizDto.getCategoryId();
-//		if (categoryId != null) {
-//			Category category = findCategoryOrThrow(categoryId);
-//			quiz.setCategory(category);
-//		}
-//		String description = quizDto.getDescription();
-//		if (description != null && !description.isBlank()) {
-//			quiz.setDescription(description);
-//		}
-//		String title = quizDto.getTitle();
-//		if (title != null && !title.isBlank()) {
-//			quiz.setTitle(title);
-//		}
-//		Boolean active = quizDto.getActive();
-//		if (active != null) {
-//			quiz.setActive(active);
-//		}
-//
-//	}
-//
-//	@Override
-//	public List<QuizDto> getAll() {
-//		return quizMapper.toDto(quizRepository.findAll());
-//	}
-//
-//
-//	private Category findCategoryOrThrow(long categoryId) {
-//		return categoryRepository.findById(categoryId).orElseThrow(() ->
-//				new NotFoundException("Категория с идентификатором " + categoryId + " не найдена"));
-//	}
-//
-//	private Quiz findByIdOrThrow(long quizId) {
-//		return quizRepository.findById(quizId).orElseThrow(() ->
-//				new NotFoundException("Тест с идентификатором " + quizId + " не найден"));
-//	}
-//}
+package ru.pet.portal.api.service.impl;
+
+import io.micrometer.common.util.StringUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.pet.portal.api.service.QuizService;
+import ru.pet.portal.store.entity.Category;
+import ru.pet.portal.store.entity.Quiz;
+import ru.pet.portal.store.repository.CategoryRepository;
+import ru.pet.portal.store.repository.QuizRepository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class QuizServiceImpl implements QuizService {
+
+	private final QuizRepository quizRepository;
+    private final CategoryRepository categoryRepository;
+
+    @Override
+    public void create(UUID categoryId, Quiz quiz) {
+        Category category = categoryRepository.findByIdWithThrow(categoryId);
+        quiz.setCategory(category);
+        quizRepository.save(quiz);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        quizRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Quiz> getAllByCategoryId(UUID categoryId, int from, int size) {
+        return quizRepository.findAllByCategoryId(categoryId, PageRequest.of(from, size, Sort.by("title")));
+    }
+
+    @Override
+    public Quiz getById(UUID quizId) {
+        return quizRepository.findByIdWithThrow(quizId);
+    }
+
+    @Override
+    @Transactional
+    public void update(UUID categoryId, Quiz quiz, UUID quizId) {
+        Quiz havingQuiz = quizRepository.findByIdWithThrow(quizId);
+        if (categoryId != null) {
+            havingQuiz.setCategory(categoryRepository.findByIdWithThrow(categoryId));
+        }
+        final String title = quiz.getTitle();
+        if (!StringUtils.isBlank(title)) {
+            havingQuiz.setTitle(title);
+        }
+        final String description = quiz.getDescription();
+        if (!StringUtils.isBlank(description)) {
+            havingQuiz.setDescription(description);
+        }
+        Boolean active = quiz.getActive();
+        if (active != null) {
+            havingQuiz.setActive(active);
+        }
+    }
+
+    @Override
+    public List<Quiz> getAll(int from, int size) {
+        return quizRepository.findAll(PageRequest.of(from, size, Sort.by("title"))).getContent();
+    }
+}

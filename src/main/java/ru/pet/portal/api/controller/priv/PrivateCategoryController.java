@@ -25,8 +25,8 @@ public class PrivateCategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping("{categoryId}")
-    public CategoryResponseDto getById(@PathVariable("categoryId") String categoryId) {
-        final Category category = categoryService.getById(UUID.fromString(categoryId));
+    public CategoryResponseDto getById(@PathVariable("categoryId") UUID categoryId) {
+        final Category category = categoryService.getById(categoryId);
         return categoryMapper.toDto(category);
     }
 

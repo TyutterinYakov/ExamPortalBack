@@ -1,30 +1,27 @@
-//package portal.store.entity;
-//
-//import javax.persistence.*;
-//
-//import lombok.*;
-//
-//
-//@Entity
-//@Table(name="quizzes")
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Getter
-//@Setter
-//@Builder
-//public class Quiz {
-//
-//	@Id
-//	@GeneratedValue(strategy=GenerationType.IDENTITY)
-//	private Long id;
-//	@Column(length=75, nullable = false)
-//	private String title;
-//	@Column(length=1000)
-//	private String description;
-//	@Builder.Default
-//	private boolean active = false;
-//	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-//	@JoinColumn(name = "category_id", nullable = false)
-//	private Category category;
-//
-//}
+package ru.pet.portal.store.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "quizzes")
+@NoArgsConstructor
+@Getter
+@Setter
+@Accessors(chain = true)
+public class Quiz {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    private String title;
+    private String description;
+    private Boolean active;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+}

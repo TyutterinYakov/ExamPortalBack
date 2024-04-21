@@ -7,8 +7,6 @@ import ru.pet.portal.store.entity.User;
 
 public interface AuthenticationService {
 	void register(User user);
-
 	LoginResponseDto login(LoginUserDto loginUserDto);
-
-    User getUser(String name);
+	User getUser(String name);
 }

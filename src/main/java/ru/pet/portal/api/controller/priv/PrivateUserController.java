@@ -34,8 +34,7 @@ class PrivateUserController {
 
     @PutMapping("/image-profile-update")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateImageProfile(@RequestParam("image") MultipartFile file,
-                                   UsernamePasswordAuthenticationToken token){
+    public void updateImageProfile(@RequestParam("image") MultipartFile file, UsernamePasswordAuthenticationToken token) {
         User user = (User) token.getPrincipal();
         imageService.updateImageProfile(user, file);
     }
