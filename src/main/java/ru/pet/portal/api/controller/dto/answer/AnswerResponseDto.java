@@ -1,4 +1,4 @@
-package ru.pet.portal.api.controller.dto;
+package ru.pet.portal.api.controller.dto.answer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnswerDto {
+public class AnswerResponseDto {
     private String reply;
-    private boolean correctly;
 }

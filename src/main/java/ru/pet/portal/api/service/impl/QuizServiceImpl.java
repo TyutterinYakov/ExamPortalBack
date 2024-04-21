@@ -7,20 +7,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pet.portal.api.service.QuizService;
+import ru.pet.portal.api.service.model.QuizSpecification;
 import ru.pet.portal.store.entity.Category;
 import ru.pet.portal.store.entity.Quiz;
 import ru.pet.portal.store.repository.CategoryRepository;
+import ru.pet.portal.store.repository.QuestionRepository;
 import ru.pet.portal.store.repository.QuizRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
 
-	private final QuizRepository quizRepository;
+    private final QuizRepository quizRepository;
     private final CategoryRepository categoryRepository;
+    private final QuestionRepository questionRepository;
 
     @Override
     public void create(UUID categoryId, Quiz quiz) {
@@ -36,7 +41,9 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<Quiz> getAllByCategoryId(UUID categoryId, int from, int size) {
-        return quizRepository.findAllByCategoryId(categoryId, PageRequest.of(from, size, Sort.by("title")));
+        final List<Quiz> quizzes = quizRepository.findAllByCategoryId(categoryId, PageRequest.of(from, size, Sort.by("title")));
+        setQuizSpecification(quizzes);
+        return quizzes;
     }
 
     @Override
@@ -59,7 +66,7 @@ public class QuizServiceImpl implements QuizService {
         if (!StringUtils.isBlank(description)) {
             havingQuiz.setDescription(description);
         }
-        Boolean active = quiz.getActive();
+        final Boolean active = quiz.getActive();
         if (active != null) {
             havingQuiz.setActive(active);
         }
@@ -67,6 +74,21 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<Quiz> getAll(int from, int size) {
-        return quizRepository.findAll(PageRequest.of(from, size, Sort.by("title"))).getContent();
+        final List<Quiz> quizzes = quizRepository.findAll(PageRequest.of(from, size, Sort.by("title")))
+                .getContent();
+        setQuizSpecification(quizzes);
+        return quizzes;
+    }
+
+
+    private void setQuizSpecification(List<Quiz> quizzes) {
+        final Map<UUID, QuizSpecification> quizSpecificationByQuizId =
+                questionRepository.getQuizSpecificationByQuizId(quizzes);
+        quizzes.forEach(quiz -> Optional.ofNullable(quizSpecificationByQuizId.get(quiz.getId()))
+                .ifPresent(s ->
+                        quiz.setCountOfQuestion(s.getCountOfQuestion())
+                                .setMaxMarks(s.getMaxMarks())
+                                .setTime(s.getTime()))
+        );
     }
 }

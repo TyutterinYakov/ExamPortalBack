@@ -23,5 +23,11 @@ public class Quiz {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+    @Transient
+    private long maxMarks;
+    @Transient
+    private long countOfQuestion;
+    @Transient
+    private long time;
 
 }

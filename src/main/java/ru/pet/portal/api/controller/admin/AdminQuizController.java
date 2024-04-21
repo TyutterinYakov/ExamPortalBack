@@ -20,6 +20,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "${exam.portal.front-url}")
 @RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
+@Validated
 public class AdminQuizController {
 
     private final QuizService quizService;

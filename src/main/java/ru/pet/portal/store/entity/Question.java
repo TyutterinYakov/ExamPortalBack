@@ -1,35 +1,36 @@
-//package portal.store.entity;
-//
-//import lombok.AllArgsConstructor;
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//
-//import javax.persistence.*;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//
-//@Entity
-//@Table(name="question")
-//@Getter
-//@Setter
-//@AllArgsConstructor
-//@NoArgsConstructor
-//public class Question {
-//
-//	@Id
-//	@GeneratedValue(strategy=GenerationType.IDENTITY)
-//	private Long id;
-//	@Column(name="content", length=4000)
-//	private String content;
-//	@Column(name="image")
-//	private String image;
-//	@ManyToOne(fetch=FetchType.LAZY, optional = false)
-//	@JoinColumn(name = "quiz_id", nullable = false)
-//	private Quiz quiz;
-//	@ElementCollection
-//	@CollectionTable(name = "answers")
-//    private List<Answer> answers = new ArrayList<>();
-//
-//}
+package ru.pet.portal.store.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.List;
+import java.util.UUID;
+
+
+@Entity
+@Table(name = "questions")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Question {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @Column(name = "content", length = 4000)
+    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<Answer> answers;
+    private int marks;
+    private int time;
+
+}

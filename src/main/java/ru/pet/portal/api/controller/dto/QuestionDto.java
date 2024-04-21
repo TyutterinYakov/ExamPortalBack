@@ -1,6 +1,5 @@
-//package portal.api.dto;
+//package ru.pet.portal.api.controller.dto;
 //
-//import javax.validation.constraints.NotEmpty;
 //
 //public class QuestionDto {
 //

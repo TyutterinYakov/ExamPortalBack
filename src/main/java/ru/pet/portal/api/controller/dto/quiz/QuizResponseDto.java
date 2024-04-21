@@ -18,8 +18,8 @@ public class QuizResponseDto {
 	private String title;
 	private String description;
 	private boolean active;
-	private int maxMarks;
-	private int countOfQuestion;
+	private long maxMarks;
+	private long countOfQuestion;
 	private CategoryResponseDto category;
 
 }
