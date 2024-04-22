@@ -1,8 +1,7 @@
 package ru.pet.portal.api.service;
 
-import ru.pet.portal.store.entity.Question;
+import ru.pet.portal.store.entity.QuestionE;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,14 +10,14 @@ public interface QuestionService {
     void deleteById(UUID questionId);
 
 
-    void update(UUID questionId, Question question);
+    void update(UUID questionId, QuestionE questionE);
 
-    void create(UUID quizId, Question question);
+    void create(UUID quizId, QuestionE questionE);
 
 
-    Question getById(UUID questionId);
+    QuestionE getById(UUID questionId);
 
-    List<Question> getAllByQuizId(UUID quizId, int from, int size);
+    List<QuestionE> getAllByQuizId(UUID quizId, int from, int size);
 
-    List<Question> getByQuizIdAndActiveQuiz(UUID quizId);
+    List<QuestionE> getByQuizIdAndActiveQuiz(UUID quizId);
 }

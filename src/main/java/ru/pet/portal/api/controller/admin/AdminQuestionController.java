@@ -10,7 +10,7 @@ import ru.pet.portal.api.controller.dto.mapper.QuestionMapper;
 import ru.pet.portal.api.controller.dto.question.QuestionAdminRequestDto;
 import ru.pet.portal.api.controller.dto.question.QuestionAdminResponseDto;
 import ru.pet.portal.api.service.QuestionService;
-import ru.pet.portal.store.entity.Question;
+import ru.pet.portal.store.entity.QuestionE;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +27,8 @@ public class AdminQuestionController {
 
     @GetMapping("questions/{questionId}")
     public QuestionAdminResponseDto getById(@PathVariable("questionId") UUID questionId) {
-        final Question question = questionService.getById(questionId);
-        return questionMapper.toAdminDto(question);
+        final QuestionE questionE = questionService.getById(questionId);
+        return questionMapper.toAdminDto(questionE);
     }
 
     @PostMapping("questions")

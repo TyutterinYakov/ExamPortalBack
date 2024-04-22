@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pet.portal.api.service.QuizService;
 import ru.pet.portal.api.service.model.QuizSpecification;
-import ru.pet.portal.store.entity.Category;
-import ru.pet.portal.store.entity.Quiz;
+import ru.pet.portal.store.entity.CategoryE;
+import ru.pet.portal.store.entity.QuizE;
 import ru.pet.portal.store.repository.CategoryRepository;
 import ru.pet.portal.store.repository.QuestionRepository;
 import ru.pet.portal.store.repository.QuizRepository;
@@ -28,9 +28,9 @@ public class QuizServiceImpl implements QuizService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public void create(UUID categoryId, Quiz quiz) {
-        Category category = categoryRepository.findByIdWithThrow(categoryId);
-        quiz.setCategory(category);
+    public void create(UUID categoryId, QuizE quiz) {
+        CategoryE categoryE = categoryRepository.findByIdWithThrow(categoryId);
+        quiz.setCategory(categoryE);
         quizRepository.save(quiz);
     }
 
@@ -40,21 +40,21 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getAllByCategoryId(UUID categoryId, int from, int size) {
-        final List<Quiz> quizzes = quizRepository.findAllByCategoryId(categoryId, PageRequest.of(from, size, Sort.by("title")));
+    public List<QuizE> getAllByCategoryId(UUID categoryId, int from, int size) {
+        final List<QuizE> quizzes = quizRepository.findAllByCategoryId(categoryId, PageRequest.of(from, size, Sort.by("title")));
         setQuizSpecification(quizzes);
         return quizzes;
     }
 
     @Override
-    public Quiz getById(UUID quizId) {
+    public QuizE getById(UUID quizId) {
         return quizRepository.findByIdWithThrow(quizId);
     }
 
     @Override
     @Transactional
-    public void update(UUID categoryId, Quiz quiz, UUID quizId) {
-        Quiz havingQuiz = quizRepository.findByIdWithThrow(quizId);
+    public void update(UUID categoryId, QuizE quiz, UUID quizId) {
+        QuizE havingQuiz = quizRepository.findByIdWithThrow(quizId);
         if (categoryId != null) {
             havingQuiz.setCategory(categoryRepository.findByIdWithThrow(categoryId));
         }
@@ -73,41 +73,41 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getAll(int from, int size) {
-        final List<Quiz> quizzes = quizRepository.findAll(PageRequest.of(from, size, Sort.by("title")))
+    public List<QuizE> getAll(int from, int size) {
+        final List<QuizE> quizzes = quizRepository.findAll(PageRequest.of(from, size, Sort.by("title")))
                 .getContent();
         setQuizSpecification(quizzes);
         return quizzes;
     }
 
     @Override
-    public Quiz getByIdAndActive(UUID quizId) {
-        final Quiz quiz = quizRepository.findByIdAndActiveWithThrow(quizId, true);
+    public QuizE getByIdAndActive(UUID quizId) {
+        final QuizE quiz = quizRepository.findByIdAndActiveWithThrow(quizId, true);
         setQuizSpecification(quiz);
         return quiz;
     }
 
     @Override
-    public List<Quiz> getAllByActive(int from, int size) {
-        final List<Quiz> quizzes = quizRepository.findAllByActive(
+    public List<QuizE> getAllByActive(int from, int size) {
+        final List<QuizE> quizzes = quizRepository.findAllByActive(
                 PageRequest.of(from, size, Sort.by("title")), true);
         setQuizSpecification(quizzes);
         return quizzes;
     }
 
     @Override
-    public List<Quiz> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size) {
-        final List<Quiz> quizzes = quizRepository.findAllByCategoryIdAndActive(categoryId,
+    public List<QuizE> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size) {
+        final List<QuizE> quizzes = quizRepository.findAllByCategoryIdAndActive(categoryId,
                 PageRequest.of(from, size, Sort.by("title")), true);
         setQuizSpecification(quizzes);
         return quizzes;
     }
 
-    private void setQuizSpecification(Quiz quiz) {
+    private void setQuizSpecification(QuizE quiz) {
         setQuizSpecification(List.of(quiz));
     }
 
-    private void setQuizSpecification(List<Quiz> quizzes) {
+    private void setQuizSpecification(List<QuizE> quizzes) {
         final Map<UUID, QuizSpecification> quizSpecificationByQuizId =
                 questionRepository.getQuizSpecificationByQuizId(quizzes);
         quizzes.forEach(quiz -> Optional.ofNullable(quizSpecificationByQuizId.get(quiz.getId()))

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Quiz {
+public class QuizE {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,7 +22,7 @@ public class Quiz {
     private Boolean active;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    private CategoryE category;
     @Transient
     private long maxMarks;
     @Transient

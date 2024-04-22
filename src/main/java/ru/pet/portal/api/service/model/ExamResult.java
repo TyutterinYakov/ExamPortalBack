@@ -9,10 +9,10 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class ExamResult {
 
-    private Long answerId;
-	private int validQuestion;
-	private int invalidQuestion;
-	private int skipQuestion;
-	private int countPoints;
-    private String quizTitle;
+    protected Long answerId;
+	protected int validQuestion;
+	protected int invalidQuestion;
+	protected int skipQuestion;
+	protected int countPoints;
+	protected String quizTitle;
 }

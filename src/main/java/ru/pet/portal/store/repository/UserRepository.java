@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ru.pet.portal.store.entity.User;
+import ru.pet.portal.store.entity.UserE;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserE, Long> {
 
-    Optional<User> findByEmail(String email);
+    Optional<UserE> findByEmail(String email);
 
-    Optional<User> findByEmailAndPassword(String email, String password);
+    Optional<UserE> findByEmailAndPassword(String email, String password);
 }

@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.pet.portal.api.config.ExamPortalConfiguration;
 import ru.pet.portal.api.service.ImageService;
 import ru.pet.portal.api.util.FileUtil;
-import ru.pet.portal.store.entity.User;
+import ru.pet.portal.store.entity.UserE;
 import ru.pet.portal.store.repository.UserRepository;
 
 @Service
@@ -23,12 +23,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void updateImageProfile(User user, MultipartFile file) {
-        String oldImage = user.getProfileImage();
+    public void updateImageProfile(UserE userE, MultipartFile file) {
+        String oldImage = userE.getProfileImage();
         String newImage = FileUtil.save(dir, file);
         FileUtil.delete(dir, oldImage, defaultImage);
-        user.setProfileImage(newImage);
-        userRepository.save(user);
+        userE.setProfileImage(newImage);
+        userRepository.save(userE);
     }
 
     @Override

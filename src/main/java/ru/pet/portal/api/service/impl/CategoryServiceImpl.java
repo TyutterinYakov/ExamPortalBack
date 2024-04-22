@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pet.portal.api.service.CategoryService;
-import ru.pet.portal.store.entity.Category;
+import ru.pet.portal.store.entity.CategoryE;
 import ru.pet.portal.store.repository.CategoryRepository;
 
 import java.util.List;
@@ -25,32 +25,32 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public void create(Category category) {
-		categoryRepository.save(category);
+	public void create(CategoryE categoryE) {
+		categoryRepository.save(categoryE);
 	}
 
 	@Override
 	@Transactional
-	public void update(UUID categoryId, Category category) {
-		final Category havingCategory = categoryRepository.findByIdWithThrow(categoryId);
-		final String title = category.getTitle();
+	public void update(UUID categoryId, CategoryE categoryE) {
+		final CategoryE havingCategoryE = categoryRepository.findByIdWithThrow(categoryId);
+		final String title = categoryE.getTitle();
 		if (!StringUtils.isBlank(title)) {
-			havingCategory.setTitle(title);
+			havingCategoryE.setTitle(title);
 		}
 
-		final String description = category.getDescription();
+		final String description = categoryE.getDescription();
 		if (!StringUtils.isBlank(description)) {
-			havingCategory.setDescription(description);
+			havingCategoryE.setDescription(description);
 		}
 	}
 
 	@Override
-	public Category getById(UUID categoryId) {
+	public CategoryE getById(UUID categoryId) {
 		return categoryRepository.findByIdWithThrow(categoryId);
 	}
 
 	@Override
-	public List<Category> getAll(int from, int size) {
+	public List<CategoryE> getAll(int from, int size) {
 		return categoryRepository.findAll(PageRequest.of(from, size, Sort.by("title"))).getContent();
 	}
 }

@@ -7,8 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.pet.portal.api.service.QuestionService;
 import ru.pet.portal.api.service.model.QuizSpecification;
-import ru.pet.portal.store.entity.Question;
-import ru.pet.portal.store.entity.Quiz;
+import ru.pet.portal.store.entity.QuestionE;
+import ru.pet.portal.store.entity.QuizE;
 import ru.pet.portal.store.repository.QuestionRepository;
 import ru.pet.portal.store.repository.QuizRepository;
 
@@ -31,41 +31,41 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void update(UUID questionId, Question question) {
-        Question havingQuestion = questionRepository.findByIdWithThrow(questionId);
-        question.setQuiz(havingQuestion.getQuiz());
-        question.setId(questionId);
-        questionRepository.save(question);
+    public void update(UUID questionId, QuestionE questionE) {
+        QuestionE havingQuestionE = questionRepository.findByIdWithThrow(questionId);
+        questionE.setQuiz(havingQuestionE.getQuiz());
+        questionE.setId(questionId);
+        questionRepository.save(questionE);
     }
 
     @Override
-    public void create(UUID quizId, Question question) {
-        final Quiz quiz = quizRepository.findByIdWithThrow(quizId);
-        question.setQuiz(quiz);
-        questionRepository.save(question);
+    public void create(UUID quizId, QuestionE questionE) {
+        final QuizE quiz = quizRepository.findByIdWithThrow(quizId);
+        questionE.setQuiz(quiz);
+        questionRepository.save(questionE);
     }
 
     @Override
-    public Question getById(UUID questionId) {
+    public QuestionE getById(UUID questionId) {
         return questionRepository.findByIdWithThrow(questionId);
     }
 
     @Override
-    public List<Question> getAllByQuizId(UUID quizId, int from, int size) {
+    public List<QuestionE> getAllByQuizId(UUID quizId, int from, int size) {
         return questionRepository.getAllByQuizId(quizId, PageRequest.of(from, size, Sort.by("id")));
     }
 
     @Override
-    public List<Question> getByQuizIdAndActiveQuiz(UUID quizId) {
-        final Quiz quiz = quizRepository.findByIdAndActiveWithThrow(quizId, true);
-        final List<Question> questions = questionRepository.getByQuizIdAndActiveQuiz(quizId, true);
-        if (!questions.isEmpty()) {
+    public List<QuestionE> getByQuizIdAndActiveQuiz(UUID quizId) {
+        final QuizE quiz = quizRepository.findByIdAndActiveWithThrow(quizId, true);
+        final List<QuestionE> questionES = questionRepository.getByQuizIdAndActiveQuiz(quizId, true);
+        if (!questionES.isEmpty()) {
             setSpecificationForQuiz(quiz);
         }
-        return questions;
+        return questionES;
     }
 
-    private void setSpecificationForQuiz(Quiz quiz) {
+    private void setSpecificationForQuiz(QuizE quiz) {
         final Map<UUID, QuizSpecification> specifications =
                 questionRepository.getQuizSpecificationByQuizId(List.of(quiz));
         Optional.ofNullable(specifications.get(quiz.getId()))

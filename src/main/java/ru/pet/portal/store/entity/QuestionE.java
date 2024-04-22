@@ -18,7 +18,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Question {
+public class QuestionE {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,7 +27,7 @@ public class Question {
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    private QuizE quiz;
     @JdbcTypeCode(SqlTypes.JSON)
     private List<Answer> answers;
     private int marks;

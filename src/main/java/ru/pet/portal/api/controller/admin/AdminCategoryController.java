@@ -9,7 +9,7 @@ import ru.pet.portal.api.controller.dto.validation.group.Create;
 import ru.pet.portal.api.controller.dto.validation.group.Update;
 import ru.pet.portal.api.controller.dto.mapper.CategoryMapper;
 import ru.pet.portal.api.service.CategoryService;
-import ru.pet.portal.store.entity.Category;
+import ru.pet.portal.store.entity.CategoryE;
 
 import java.util.UUID;
 
@@ -25,16 +25,16 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody @Validated(Create.class) CategoryRequestDto categoryDto) {
-        final Category category = categoryMapper.toEntity(categoryDto);
-        categoryService.create(category);
+        final CategoryE categoryE = categoryMapper.toEntity(categoryDto);
+        categoryService.create(categoryE);
     }
 
     @PutMapping("{categoryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@PathVariable("categoryId") UUID categoryId,
                        @RequestBody @Validated(Update.class) CategoryRequestDto categoryDto) {
-        final Category category = categoryMapper.toEntity(categoryDto);
-        categoryService.update(categoryId, category);
+        final CategoryE categoryE = categoryMapper.toEntity(categoryDto);
+        categoryService.update(categoryId, categoryE);
     }
 
     @DeleteMapping("{categoryId}")

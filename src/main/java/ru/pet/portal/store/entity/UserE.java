@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-public class User implements UserDetails {
+public class UserE implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

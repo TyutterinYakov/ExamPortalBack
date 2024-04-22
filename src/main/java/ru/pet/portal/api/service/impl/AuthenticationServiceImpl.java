@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,7 @@ import ru.pet.portal.api.controller.dto.user.LoginResponseDto;
 import ru.pet.portal.api.controller.dto.user.LoginUserDto;
 import ru.pet.portal.api.security.JwtService;
 import ru.pet.portal.api.service.AuthenticationService;
-import ru.pet.portal.store.entity.User;
+import ru.pet.portal.store.entity.UserE;
 import ru.pet.portal.store.repository.UserRepository;
 
 @Service
@@ -32,13 +31,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public void register(User user) {
-        userRepository.findByEmail(user.getEmail()).ifPresentOrElse(u -> {
+    public void register(UserE userE) {
+        userRepository.findByEmail(userE.getEmail()).ifPresentOrElse(u -> {
             throw new DataIntegrityViolationException(
                     "Пользователь с почтой " + u.getEmail() + " уже зарегистрирован!!!");
-        }, () -> user.setPassword(passwordEncoder.encode(user.getPassword())));
+        }, () -> userE.setPassword(passwordEncoder.encode(userE.getPassword())));
 
-        userRepository.save(user);
+        userRepository.save(userE);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User getUser(String name) {
+    public UserE getUser(String name) {
         return userRepository.findByEmail(name).orElseThrow();
     }
 }

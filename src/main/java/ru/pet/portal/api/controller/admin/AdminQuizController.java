@@ -11,7 +11,7 @@ import ru.pet.portal.api.controller.dto.quiz.QuizResponseDto;
 import ru.pet.portal.api.controller.dto.validation.group.Create;
 import ru.pet.portal.api.controller.dto.validation.group.Update;
 import ru.pet.portal.api.service.QuizService;
-import ru.pet.portal.store.entity.Quiz;
+import ru.pet.portal.store.entity.QuizE;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class AdminQuizController {
     @PostMapping("quizzes")
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestBody @Validated(Create.class) QuizRequestDto quizDto) {
-        final Quiz quiz = quizMapper.toEntity(quizDto);
+        final QuizE quiz = quizMapper.toEntity(quizDto);
         quizService.create(quizDto.getCategoryId(), quiz);
     }
 
@@ -43,7 +43,7 @@ public class AdminQuizController {
     public List<QuizResponseDto> getAllByCategory(@PathVariable("categoryId") UUID categoryId,
                                                   @RequestParam int from,
                                                   @RequestParam int size) {
-        final List<Quiz> quizzes = quizService.getAllByCategoryId(categoryId, from, size);
+        final List<QuizE> quizzes = quizService.getAllByCategoryId(categoryId, from, size);
         return quizzes.stream().map(quizMapper::toDto).toList();
     }
 

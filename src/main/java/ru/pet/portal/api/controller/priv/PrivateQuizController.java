@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.pet.portal.api.controller.dto.mapper.QuizMapper;
 import ru.pet.portal.api.controller.dto.quiz.QuizResponseDto;
 import ru.pet.portal.api.service.QuizService;
-import ru.pet.portal.store.entity.Quiz;
+import ru.pet.portal.store.entity.QuizE;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ public class PrivateQuizController {
 
     @GetMapping("quizzes/{quizId}")
     public QuizResponseDto getByIdAndActive(@PathVariable UUID quizId) {
-        final Quiz quiz = quizService.getByIdAndActive(quizId);
+        final QuizE quiz = quizService.getByIdAndActive(quizId);
         return quizMapper.toDto(quiz);
     }
 

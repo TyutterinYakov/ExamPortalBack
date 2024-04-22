@@ -1,7 +1,6 @@
 package ru.pet.portal.store.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Category {
+public class CategoryE {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
