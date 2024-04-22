@@ -61,7 +61,7 @@ public class AdminQuizController {
 
     @GetMapping("quizzes")
     public List<QuizResponseDto> getAll(@RequestParam(defaultValue = "0") @Min(0) int from,
-                                @RequestParam(defaultValue = "10") @Min(1) int size) {
+                                        @RequestParam(defaultValue = "10") @Min(1) int size) {
         return quizService.getAll(from, size).stream().map(quizMapper::toDto).toList();
     }
 

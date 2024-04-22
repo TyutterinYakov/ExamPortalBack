@@ -8,10 +8,12 @@ import ru.pet.portal.api.controller.dto.answer.AnswerExamRequestDto;
 import ru.pet.portal.api.controller.dto.exam.ExamResultDto;
 import ru.pet.portal.api.controller.dto.mapper.ExamMapper;
 import ru.pet.portal.api.service.ExamResultService;
+import ru.pet.portal.api.service.model.AnswerExamRequest;
 import ru.pet.portal.store.entity.User;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "${exam.portal.front-url}")
@@ -27,10 +29,13 @@ public class PrivateExamResultController {
 //		examResultService.checkUserResultExam(principal.getName(), id);
 //	}
 
-	@PostMapping("submit")
-	public ExamResultDto submitExam(@RequestBody List<AnswerExamRequestDto> answers, UsernamePasswordAuthenticationToken token) {
+	@PostMapping("submit/{quizId}")
+	public ExamResultDto submitExam(@RequestBody List<AnswerExamRequestDto> answers,
+									UsernamePasswordAuthenticationToken token,
+									@PathVariable UUID quizId) {
 		final User user = (User) token.getPrincipal();
-		return examMapper.toDto(examResultService.submitExam(user.getId(), answers));
+		final List<AnswerExamRequest> examRequests = answers.stream().map(examMapper::toModel).toList();
+		return examMapper.toDto(examResultService.submitExam(quizId, user.getId(), examRequests));
 	}
 
 //	@GetMapping("all")

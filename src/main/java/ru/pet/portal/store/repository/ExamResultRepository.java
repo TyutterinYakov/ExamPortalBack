@@ -2,7 +2,7 @@ package ru.pet.portal.store.repository;
 
 import java.util.UUID;
 
-public interface ExamResultRepository extends JpaRepository<ExamResult, UUID> {
+//public interface ExamResultRepository extends JpaRepository<ExamResult, UUID> {
 
 
 
@@ -11,4 +11,4 @@ public interface ExamResultRepository extends JpaRepository<ExamResult, UUID> {
 //			+ "	on answer_quize.answer = quize_statistic.ANSWER_ID "
 //			+ "	where answer_quize.quize=?1 ")
 //	List<ExamResult> findAllByQuizeId(Long id);
-}
+//}
