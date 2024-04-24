@@ -18,4 +18,6 @@ public interface ExamResultService {
 
     void deleteById(UUID resultId);
 
+    boolean examHasBeenSolvedByUser(UUID userId, UUID quizId);
+
 }

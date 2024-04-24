@@ -14,4 +14,6 @@ public interface ExamResultRepository extends JpaRepository<ExamResultE, UUID> {
     @Query("select e from ExamResultE e where e.quiz.id = :quizId")
     List<ExamResultE> findAllByQuizId(UUID quizId);
 
+    @Query("select count(*) > 0 from ExamResultE e where e.user.id = :userId and e.quiz.id = :quizId")
+    boolean existsByQuizIdAndUserId(UUID userId, UUID quizId);
 }

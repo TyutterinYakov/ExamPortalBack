@@ -23,10 +23,12 @@ public class PrivateExamResultController {
 	private final ExamResultService examResultService;
 	private final ExamMapper examMapper;
 
-//	@GetMapping("{quizId}")
-//	public void checkUserResultByQuizeId(@PathVariable("quizeId") Long id, Principal principal) {
-//		examResultService.checkUserResultExam(principal.getName(), id);
-//	}
+	@GetMapping("{quizId}")
+	public boolean examHasBeenSolvedByUser(@PathVariable UUID quizId,
+										 UsernamePasswordAuthenticationToken token) {
+		UserE user = (UserE) token.getPrincipal();
+		return examResultService.examHasBeenSolvedByUser(user.getId(), quizId);
+	}
 
 	@PostMapping("submit/{quizId}")
 	public ExamResultDto submitExam(@RequestBody List<AnswerExamRequestDto> answers,

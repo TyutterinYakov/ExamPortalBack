@@ -98,4 +98,9 @@ public class ExamResultServiceImpl implements ExamResultService {
     public void deleteById(UUID resultId) {
         examResultRepository.deleteById(resultId);
     }
+
+    @Override
+    public boolean examHasBeenSolvedByUser(UUID userId, UUID quizId) {
+        return examResultRepository.existsByQuizIdAndUserId(userId, quizId);
+    }
 }
