@@ -31,7 +31,7 @@ public class AdminCategoryController {
 
     @PutMapping("{categoryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void update(@PathVariable("categoryId") UUID categoryId,
+    public void update(@PathVariable UUID categoryId,
                        @RequestBody @Validated(Update.class) CategoryRequestDto categoryDto) {
         final CategoryE categoryE = categoryMapper.toEntity(categoryDto);
         categoryService.update(categoryId, categoryE);
@@ -39,7 +39,7 @@ public class AdminCategoryController {
 
     @DeleteMapping("{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable("categoryId") UUID categoryId) {
+    public void deleteById(@PathVariable UUID categoryId) {
         categoryService.deleteById(categoryId);
     }
 }

@@ -15,4 +15,21 @@ public class ExamResult {
 	protected int skipQuestion;
 	protected int countPoints;
 	protected String quizTitle;
+
+	public void incValidQuestion() {
+		validQuestion++;
+	}
+
+	public void incInvalidQuestion() {
+		invalidQuestion++;
+	}
+
+	public void incSkipQuestion() {
+		skipQuestion++;
+	}
+
+	public void recalculateCountPoints(int marks) {
+		countPoints += marks;
+	}
+
 }

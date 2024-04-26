@@ -31,44 +31,25 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     @Override
     public ExamResult submitExam(UUID quizId, UserE user, List<AnswerExamRequest> answers) {
-        final List<QuestionE> questions = questionRepository.getByQuizIdAndActiveQuiz(quizId, true);
+        final Map<UUID, QuestionE> questionById = questionRepository.getByQuizIdAndActiveQuiz(quizId, true).stream().collect(Collectors.toMap(QuestionE::getId, Function.identity()));
 
-        if (questions.isEmpty()) {
+        if (questionById.isEmpty()) {
             throw new NotFoundException("Некорректный quiz с идентификатором " + quizId);
         }
 
-        final Map<UUID, Pair<Answer, Integer>> answerCorrectlyByQuestionId = questions.stream()
+        final Map<UUID, Pair<Answer, Integer>> answerCorrectlyByQuestionId = questionById.values().stream()
                 .collect(Collectors.toMap(QuestionE::getId, q -> new ImmutablePair<>(
                         q.getAnswers().stream().filter(Answer::isCorrectly)
                                 .findFirst().orElseThrow(), q.getMarks())));
 
-        final Map<UUID, QuestionE> questionById = questions
-                .stream().collect(Collectors.toMap(QuestionE::getId, Function.identity()));
+        final ExamResult examResult = new ExamResult();
 
-        ExamResult examResult = new ExamResult();
-        final List<ExamAnswer> results = new ArrayList<>(answers.size());
-        answers.forEach(a -> {
+        final List<ExamAnswer> results = answers.stream().map(a -> {
             final Pair<Answer, Integer> answerAndMarks = answerCorrectlyByQuestionId.get(a.getQuestionId());
-            final String givenAnswer = a.getGivenAnswer();
-            final String correctlyAnswer = answerAndMarks.getLeft().getReply();
 
-            //Проверка, что на вопрос был дан ответ
-            if (StringUtils.isBlank(givenAnswer)) {
-                examResult.setSkipQuestion(examResult.getSkipQuestion() + 1);
-            } else {
-                //Проверка, что на вопрос был дан правильный ответ
-                if (Objects.equals(givenAnswer, correctlyAnswer)) {
-                    examResult.setValidQuestion(examResult.getValidQuestion() + 1);
-                    examResult.setCountPoints(examResult.getCountPoints() + answerAndMarks.getRight());
-                } else {
-                    examResult.setInvalidQuestion(examResult.getInvalidQuestion() + 1);
-                }
-            }
-            results.add(new ExamAnswer()
-                    .setGivenAnswer(givenAnswer)
-                    .setAnswer(correctlyAnswer)
-                    .setQuestionContent(questionById.get(a.getQuestionId()).getContent()));
-        });
+            return checkGivenAnswer(a, examResult, answerAndMarks, questionById);
+        }).toList();
+
         final QuizE quiz = quizRepository.findByIdWithThrow(quizId);
 
         List<QuizSpecification> quizSpecifications = questionRepository.getQuizSpecifications(List.of(quiz));
@@ -102,5 +83,30 @@ public class ExamResultServiceImpl implements ExamResultService {
     @Override
     public boolean examHasBeenSolvedByUser(UUID userId, UUID quizId) {
         return examResultRepository.existsByQuizIdAndUserId(userId, quizId);
+    }
+
+    private static ExamAnswer checkGivenAnswer(AnswerExamRequest a,
+                                               ExamResult examResult,
+                                               Pair<Answer, Integer> answerAndMarks,
+                                               Map<UUID, QuestionE> questionById) {
+
+        final String givenAnswer = a.getGivenAnswer();
+        final String correctlyAnswer = answerAndMarks.getLeft().getReply();
+        //Проверка, что на вопрос был дан ответ
+        if (StringUtils.isBlank(givenAnswer)) {
+            examResult.incSkipQuestion();
+        } else {
+            //Проверка, что на вопрос был дан правильный ответ
+            if (Objects.equals(givenAnswer, correctlyAnswer)) {
+                examResult.incValidQuestion();
+                examResult.recalculateCountPoints(answerAndMarks.getRight());
+            } else {
+                examResult.incInvalidQuestion();
+            }
+        }
+        return new ExamAnswer()
+                .setGivenAnswer(givenAnswer)
+                .setAnswer(correctlyAnswer)
+                .setQuestionContent(questionById.get(a.getQuestionId()).getContent());
     }
 }

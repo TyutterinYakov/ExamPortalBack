@@ -26,7 +26,7 @@ public class AdminQuestionController {
     private final QuestionMapper questionMapper;
 
     @GetMapping("questions/{questionId}")
-    public QuestionAdminResponseDto getById(@PathVariable("questionId") UUID questionId) {
+    public QuestionAdminResponseDto getById(@PathVariable UUID questionId) {
         final QuestionE questionE = questionService.getById(questionId);
         return questionMapper.toAdminDto(questionE);
     }
@@ -45,7 +45,7 @@ public class AdminQuestionController {
 
     @DeleteMapping("questions/{questionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable("questionId") UUID questionId) {
+    public void deleteById(@PathVariable UUID questionId) {
         questionService.deleteById(questionId);
     }
 

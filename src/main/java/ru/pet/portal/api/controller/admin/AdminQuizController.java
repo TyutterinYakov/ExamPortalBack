@@ -40,7 +40,7 @@ public class AdminQuizController {
 
 
     @GetMapping("{categoryId}/quizzes")
-    public List<QuizResponseDto> getAllByCategory(@PathVariable("categoryId") UUID categoryId,
+    public List<QuizResponseDto> getAllByCategory(@PathVariable UUID categoryId,
                                                   @RequestParam int from,
                                                   @RequestParam int size) {
         final List<QuizE> quizzes = quizService.getAllByCategoryId(categoryId, from, size);
@@ -55,7 +55,7 @@ public class AdminQuizController {
     @PutMapping("quizzes/{quizId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@RequestBody @Validated(Update.class) QuizRequestDto quizDto,
-                       @PathVariable("quizId") UUID quizId) {
+                       @PathVariable UUID quizId) {
         quizService.update(quizDto.getCategoryId(), quizMapper.toEntity(quizDto), quizId);
     }
 

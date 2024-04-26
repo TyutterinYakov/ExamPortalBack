@@ -44,17 +44,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponseDto login(LoginUserDto loginUserDto) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginUserDto.getEmail());
         if (!passwordEncoder.matches(loginUserDto.getPassword(), userDetails.getPassword())) {
-            throw new RuntimeException("Некорректный пароль");
+            throw new IllegalArgumentException("Некорректный пароль");
         }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(), loginUserDto.getPassword()));
         String jwtToken = jwtService.generateToken(userDetails);
 
         return new LoginResponseDto().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
-    }
-
-    @Override
-    public UserE getUser(String name) {
-        return userRepository.findByEmail(name).orElseThrow();
     }
 }

@@ -28,7 +28,7 @@ public class UserE implements UserDetails {
     private boolean enabled = true;
     private String profileImage = "default.png";
     @Enumerated(value = EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role = Role.ROLE_USER;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
