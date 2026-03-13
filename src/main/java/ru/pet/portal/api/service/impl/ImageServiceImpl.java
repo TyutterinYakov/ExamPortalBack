@@ -1,9 +1,10 @@
 package ru.pet.portal.api.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.pet.portal.api.config.ExamPortalConfiguration;
+import ru.pet.portal.api.config.ExamPortalProperties;
 import ru.pet.portal.api.exception.NotFoundException;
 import ru.pet.portal.api.service.ImageService;
 import ru.pet.portal.api.util.FileUtil;
@@ -12,6 +13,7 @@ import ru.pet.portal.store.repository.UserRepository;
 
 @Service
 @Slf4j
+@Profile("!minio")
 public class ImageServiceImpl implements ImageService {
 
     private final String dir;
@@ -19,10 +21,10 @@ public class ImageServiceImpl implements ImageService {
     private final UserRepository userRepository;
 
 
-    public ImageServiceImpl(UserRepository userRepository, ExamPortalConfiguration examPortalConfiguration) {
+    public ImageServiceImpl(UserRepository userRepository, ExamPortalProperties examPortalProperties) {
         this.userRepository = userRepository;
-        this.dir = examPortalConfiguration.getImageUploadDirectory();
-        this.defaultImage = examPortalConfiguration.getImageDefault();
+        this.dir = examPortalProperties.getImageUploadDirectory();
+        this.defaultImage = examPortalProperties.getImageDefault();
     }
 
     @Override

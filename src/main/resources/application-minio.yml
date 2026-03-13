@@ -1,0 +1,6 @@
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_USER}
+  secret-key: ${MINIO_PASSWORD}
+  bucket: ${MINIO_BUCKET}
+  region: ru-central-1

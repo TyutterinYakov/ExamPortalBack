@@ -8,7 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import ru.pet.portal.api.config.ExamPortalConfiguration;
+import ru.pet.portal.api.config.ExamPortalProperties;
 
 import java.security.Key;
 import java.util.Date;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final ExamPortalConfiguration examPortalConfiguration;
+    private final ExamPortalProperties examPortalProperties;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -36,7 +36,7 @@ public class JwtService {
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, examPortalConfiguration.getJwtExpiration());
+        return buildToken(extraClaims, userDetails, examPortalProperties.getJwtExpiration());
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
@@ -73,11 +73,11 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(examPortalConfiguration.getJwtSecret());
+        byte[] keyBytes = Decoders.BASE64.decode(examPortalProperties.getJwtSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public long getExpirationTime() {
-        return examPortalConfiguration.getJwtExpiration();
+        return examPortalProperties.getJwtExpiration();
     }
 }

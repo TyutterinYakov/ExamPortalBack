@@ -15,8 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import ru.pet.portal.api.config.ExamPortalConfiguration;
-import ru.pet.portal.api.security.JwtService;
+import ru.pet.portal.api.config.ExamPortalProperties;
 
 import java.io.IOException;
 
@@ -25,7 +24,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
-    private final ExamPortalConfiguration examPortalConfiguration;
+    private final ExamPortalProperties examPortalProperties;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
@@ -36,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader(examPortalConfiguration.getJwtHeader());
+        final String authHeader = request.getHeader(examPortalProperties.getJwtHeader());
 
         if (authHeader == null) {
             filterChain.doFilter(request, response);

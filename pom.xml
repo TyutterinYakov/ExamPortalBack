@@ -76,6 +76,12 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>8.6.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 <!--		test dep-->
 		<dependency>

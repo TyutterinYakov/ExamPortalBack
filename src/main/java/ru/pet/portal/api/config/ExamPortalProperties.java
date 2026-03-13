@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "exam.portal")
 @Data
 @Slf4j
-public class ExamPortalConfiguration {
+public class ExamPortalProperties {
     private String frontUrl;
     private String imageUploadDirectory;
     private String imageDefault;
