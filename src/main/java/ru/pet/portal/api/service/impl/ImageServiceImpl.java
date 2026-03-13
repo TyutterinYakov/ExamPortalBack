@@ -1,14 +1,17 @@
 package ru.pet.portal.api.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.pet.portal.api.config.ExamPortalConfiguration;
+import ru.pet.portal.api.exception.NotFoundException;
 import ru.pet.portal.api.service.ImageService;
 import ru.pet.portal.api.util.FileUtil;
 import ru.pet.portal.store.entity.UserE;
 import ru.pet.portal.store.repository.UserRepository;
 
 @Service
+@Slf4j
 public class ImageServiceImpl implements ImageService {
 
     private final String dir;
@@ -33,6 +36,11 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public byte[] getImageProfile(String imageName) {
-        return FileUtil.readFile(dir, imageName);
+        try {
+            return FileUtil.readFile(dir, imageName);
+        } catch (NotFoundException ex) {
+            log.error("Image not found", ex);
+            return FileUtil.readFile(dir, defaultImage);
+        }
     }
 }

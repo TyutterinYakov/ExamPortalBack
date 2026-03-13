@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_portal?currentSchema=test_portal
-    username: root
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
@@ -19,11 +19,11 @@ spring:
 
 exam:
   portal:
-    front-url: http://localhost:4200/
+    front-url: ${FRONT_URL}
     image-upload-directory: src/main/resources/images/profile
     image-default: default.png
     jwt-header: Authorization
-    jwt-secret: secret4356789654324567865432567854324567854fsdfdsfdsfdsdfsfdfdswqeq21wasdsaadsdagfderew2rgf
+    jwt-secret: ${JWT_SECRET}
     jwt-expiration: 604800
 
 
