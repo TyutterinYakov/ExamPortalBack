@@ -37,15 +37,15 @@ public class ExamResultServiceImpl implements ExamResultService {
             throw new NotFoundException("Некорректный quiz с идентификатором " + quizId);
         }
 
-        final Map<UUID, Pair<Answer, Integer>> answerCorrectlyByQuestionId = questionById.values().stream()
+        final Map<UUID, Pair<AnswerE, Integer>> answerCorrectlyByQuestionId = questionById.values().stream()
                 .collect(Collectors.toMap(QuestionE::getId, q -> new ImmutablePair<>(
-                        q.getAnswers().stream().filter(Answer::isCorrectly)
+                        q.getAnswers().stream().filter(AnswerE::isCorrectly)
                                 .findFirst().orElseThrow(), q.getMarks())));
 
         final ExamResult examResult = new ExamResult();
 
         final List<ExamAnswer> results = answers.stream().map(a -> {
-            final Pair<Answer, Integer> answerAndMarks = answerCorrectlyByQuestionId.get(a.getQuestionId());
+            final Pair<AnswerE, Integer> answerAndMarks = answerCorrectlyByQuestionId.get(a.getQuestionId());
 
             return checkGivenAnswer(a, examResult, answerAndMarks, questionById);
         }).toList();
@@ -87,7 +87,7 @@ public class ExamResultServiceImpl implements ExamResultService {
 
     private static ExamAnswer checkGivenAnswer(AnswerExamRequest a,
                                                ExamResult examResult,
-                                               Pair<Answer, Integer> answerAndMarks,
+                                               Pair<AnswerE, Integer> answerAndMarks,
                                                Map<UUID, QuestionE> questionById) {
 
         final String givenAnswer = a.getGivenAnswer();

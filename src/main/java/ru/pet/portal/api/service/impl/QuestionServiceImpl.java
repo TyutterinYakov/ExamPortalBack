@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.pet.portal.api.service.QuestionService;
 import ru.pet.portal.api.service.model.QuizSpecification;
+import ru.pet.portal.store.entity.AnswerE;
 import ru.pet.portal.store.entity.QuestionE;
 import ru.pet.portal.store.entity.QuizE;
 import ru.pet.portal.store.repository.QuestionRepository;
