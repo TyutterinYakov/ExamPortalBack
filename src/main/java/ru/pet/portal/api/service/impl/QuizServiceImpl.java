@@ -6,18 +6,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import ru.pet.portal.api.service.QuizService;
 import ru.pet.portal.api.service.model.QuizSpecification;
 import ru.pet.portal.store.entity.CategoryE;
+import ru.pet.portal.store.entity.PositionE;
 import ru.pet.portal.store.entity.QuizE;
+import ru.pet.portal.store.entity.UserE;
 import ru.pet.portal.store.repository.CategoryRepository;
+import ru.pet.portal.store.repository.PositionRepository;
 import ru.pet.portal.store.repository.QuestionRepository;
 import ru.pet.portal.store.repository.QuizRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +27,17 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepository quizRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionRepository questionRepository;
+    private final PositionRepository positionRepository;
 
     @Override
-    public QuizE create(UUID categoryId, QuizE quiz) {
+    public QuizE create(UUID categoryId, QuizE quiz, Set<UUID> positionIds) {
         CategoryE categoryE = categoryRepository.findByIdWithThrow(categoryId);
         quiz.setCategory(categoryE);
+        if (!CollectionUtils.isEmpty(positionIds)) {
+            final List<PositionE> positions = positionRepository.findAllById(positionIds);
+            quiz.setPositions(positions);
+        }
+
         return quizRepository.saveAndFlush(quiz);
     }
 
@@ -53,7 +60,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public void update(UUID categoryId, QuizE quiz, UUID quizId) {
+    public void update(UUID categoryId, QuizE quiz, UUID quizId, Set<UUID> positionIds) {
         QuizE havingQuiz = quizRepository.findByIdWithThrow(quizId);
         if (categoryId != null) {
             havingQuiz.setCategory(categoryRepository.findByIdWithThrow(categoryId));
@@ -70,6 +77,13 @@ public class QuizServiceImpl implements QuizService {
         if (active != null) {
             havingQuiz.setActive(active);
         }
+
+        positionRepository.deleteByQuizId(havingQuiz.getId());
+        if (!CollectionUtils.isEmpty(positionIds)) {
+            final List<PositionE> positions = positionRepository.findAllById(positionIds);
+            havingQuiz.setPositions(positions);
+        }
+        quizRepository.save(havingQuiz);
     }
 
     @Override
@@ -88,7 +102,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizE> getAllByActive(int from, int size) {
+    public List<QuizE> getAllByActive(int from, int size, UserE user) {
         final List<QuizE> quizzes = quizRepository.findAllByActive(
                 PageRequest.of(from, size, Sort.by("title")), true);
         setQuizSpecification(quizzes);
@@ -96,7 +110,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizE> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size) {
+    public List<QuizE> getActiveQuizzesByCategoryId(UUID categoryId, int from, int size, UserE user) {
         final List<QuizE> quizzes = quizRepository.findAllByCategoryIdAndActive(categoryId,
                 PageRequest.of(from, size, Sort.by("title")), true);
         setQuizSpecification(quizzes);

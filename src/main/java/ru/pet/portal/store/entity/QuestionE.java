@@ -23,10 +23,10 @@ public class QuestionE {
     private UUID id;
     @Column(name = "content", length = 4000)
     private String content;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private QuizE quiz;
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.ALL, CascadeType.REMOVE}, fetch = FetchType.EAGER)
     private List<AnswerE> answers;
     private int marks;
     private int time;

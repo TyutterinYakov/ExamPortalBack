@@ -37,7 +37,7 @@ public class AdminQuizController {
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestBody @Validated(Create.class) QuizRequestDto quizDto) {
         final QuizE quiz = quizMapper.toEntity(quizDto);
-        quizService.create(quizDto.getCategoryId(), quiz);
+        quizService.create(quizDto.getCategoryId(), quiz, quizDto.getPositions());
     }
 
     @DeleteMapping("quizzes/{quizId}")
@@ -63,7 +63,7 @@ public class AdminQuizController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void update(@RequestBody @Validated(Update.class) QuizRequestDto quizDto,
                        @PathVariable UUID quizId) {
-        quizService.update(quizDto.getCategoryId(), quizMapper.toEntity(quizDto), quizId);
+        quizService.update(quizDto.getCategoryId(), quizMapper.toEntity(quizDto), quizId, quizDto.getPositions());
     }
 
     @GetMapping("quizzes")

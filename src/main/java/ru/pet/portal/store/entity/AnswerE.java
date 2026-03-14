@@ -24,7 +24,7 @@ public class AnswerE {
     @Column(name = "correctly")
     private boolean correctly;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinColumn(name = "question_id")
     private QuestionE question;
 }

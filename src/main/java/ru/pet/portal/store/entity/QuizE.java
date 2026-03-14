@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,5 +30,12 @@ public class QuizE {
     private long countOfQuestion;
     @Transient
     private long time;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "quizzes_positions",
+            joinColumns = @JoinColumn(name = "quiz_id"),
+            inverseJoinColumns = @JoinColumn(name = "position_id")
+    )
+    private List<PositionE> positions;
 
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import ru.pet.portal.api.controller.dto.validation.group.Create;
 import ru.pet.portal.api.controller.dto.validation.group.Update;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -22,5 +23,6 @@ public class QuizRequestDto {
     private Boolean active;
     @NotNull(groups = {Create.class})
     private UUID categoryId;
+    private Set<UUID> positions;
 
 }

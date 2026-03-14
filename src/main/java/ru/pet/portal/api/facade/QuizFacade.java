@@ -29,7 +29,8 @@ public class QuizFacade {
 
     @Transactional
     public void generate(GeneratedQuiz rq, UUID categoryId) {
-        final QuizE quiz = quizService.create(categoryId, quizMapper.toEntity(rq, false));
+        //TODO: Доработать позиции. Добавить их на UI
+        final QuizE quiz = quizService.create(categoryId, quizMapper.toEntity(rq, false), null);
         final List<QuestionE> questionsToSave = new ArrayList<>(rq.getQuestions().size());
         for (GeneratedQuiz.GeneratedQuestion question : rq.getQuestions()) {
             final QuestionE questionToSave = questionMapper.toEntity(question, quiz);

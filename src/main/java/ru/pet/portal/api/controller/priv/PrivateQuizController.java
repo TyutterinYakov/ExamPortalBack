@@ -2,12 +2,14 @@ package ru.pet.portal.api.controller.priv;
 
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.pet.portal.api.controller.dto.mapper.QuizMapper;
 import ru.pet.portal.api.controller.dto.quiz.QuizResponseDto;
 import ru.pet.portal.api.service.QuizService;
 import ru.pet.portal.store.entity.QuizE;
+import ru.pet.portal.store.entity.UserE;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,15 +32,19 @@ public class PrivateQuizController {
 
     @GetMapping("quizzes")
     public List<QuizResponseDto> getAllByActive(@Min(0) @RequestParam(defaultValue = "0") int from,
-                                                @Min(1) @RequestParam(defaultValue = "10") int size) {
-        return quizService.getAllByActive(from, size).stream().map(quizMapper::toDto).toList();
+                                                @Min(1) @RequestParam(defaultValue = "10") int size,
+                                                UsernamePasswordAuthenticationToken token) {
+        final UserE userE = (UserE) token.getPrincipal();
+        return quizService.getAllByActive(from, size, userE).stream().map(quizMapper::toDto).toList();
     }
 
     @GetMapping("{categoryId}/quizzes")
     public List<QuizResponseDto> getAllByCategoryIdAndActive(@Min(0) @RequestParam(defaultValue = "0") int from,
                                                              @Min(1) @RequestParam(defaultValue = "10") int size,
-                                                             @PathVariable("categoryId") UUID categoryId) {
-        return quizService.getActiveQuizzesByCategoryId(categoryId, from, size).stream().map(quizMapper::toDto).toList();
+                                                             @PathVariable("categoryId") UUID categoryId,
+                                                             UsernamePasswordAuthenticationToken token) {
+        final UserE userE = (UserE) token.getPrincipal();
+        return quizService.getActiveQuizzesByCategoryId(categoryId, from, size, userE).stream().map(quizMapper::toDto).toList();
     }
 
 }
