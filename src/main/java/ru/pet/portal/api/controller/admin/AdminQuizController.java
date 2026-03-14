@@ -75,7 +75,7 @@ public class AdminQuizController {
     @PostMapping("quizzes/generate")
     public void generate(@Valid @RequestBody QuestionGenerationRequest rq) {
         final GeneratedQuiz generatedQuiz = gigaChatService.generateQuiz(rq);
-        quizFacade.generate(generatedQuiz, rq.getCategoryId());
+        quizFacade.generate(generatedQuiz, rq.getCategoryId(), rq.getPositions());
     }
 
 

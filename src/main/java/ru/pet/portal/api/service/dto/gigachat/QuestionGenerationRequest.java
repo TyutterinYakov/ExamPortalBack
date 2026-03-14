@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.pet.portal.api.controller.dto.validation.group.Create;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -25,4 +26,5 @@ public class QuestionGenerationRequest {
     private String format; // "multiple-choice", "true-false", "short-answer"
     @NotNull
     private UUID categoryId;
+    private Set<UUID> positions;
 }

@@ -15,6 +15,7 @@ import ru.pet.portal.store.entity.QuizE;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Component
@@ -28,9 +29,8 @@ public class QuizFacade {
     private final AnswerMapper answerMapper;
 
     @Transactional
-    public void generate(GeneratedQuiz rq, UUID categoryId) {
-        //TODO: Доработать позиции. Добавить их на UI
-        final QuizE quiz = quizService.create(categoryId, quizMapper.toEntity(rq, false), null);
+    public void generate(GeneratedQuiz rq, UUID categoryId, Set<UUID> positionIds) {
+        final QuizE quiz = quizService.create(categoryId, quizMapper.toEntity(rq, false), positionIds);
         final List<QuestionE> questionsToSave = new ArrayList<>(rq.getQuestions().size());
         for (GeneratedQuiz.GeneratedQuestion question : rq.getQuestions()) {
             final QuestionE questionToSave = questionMapper.toEntity(question, quiz);
