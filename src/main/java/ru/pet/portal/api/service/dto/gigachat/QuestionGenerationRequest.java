@@ -19,7 +19,6 @@ public class QuestionGenerationRequest {
     private String topic;
     @NotBlank
     private String difficulty;
-    @Max(4)
     @Min(2)
     @NotNull
     private Integer questionCount;

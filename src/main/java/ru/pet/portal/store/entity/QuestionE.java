@@ -23,7 +23,7 @@ public class QuestionE {
     private UUID id;
     @Column(name = "content", length = 4000)
     private String content;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id")
     private QuizE quiz;
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

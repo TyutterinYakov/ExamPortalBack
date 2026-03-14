@@ -31,6 +31,7 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.deleteById(questionId);
     }
 
+    //Не работает обновление!!! Нужно связать ответ по айдишнику с вопросом и с самой записью в БД. Раньше был json
     @Override
     public void update(UUID questionId, QuestionE questionE) {
         QuestionE havingQuestionE = questionRepository.findByIdWithThrow(questionId);
