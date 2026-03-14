@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 
 @Entity
@@ -32,6 +31,13 @@ public class UserE implements UserDetails {
     private Role role = Role.ROLE_USER;
     @Convert(converter = StringSetConverter.class)
     private Set<String> interests;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_positions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "position_id")
+    )
+    private List<PositionE> positions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
