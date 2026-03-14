@@ -6,9 +6,10 @@ import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +30,8 @@ public class UserE implements UserDetails {
     private String profileImage = "default.png";
     @Enumerated(value = EnumType.STRING)
     private Role role = Role.ROLE_USER;
+    @Convert(converter = StringSetConverter.class)
+    private Set<String> interests;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,4 +58,20 @@ public class UserE implements UserDetails {
         return true;
     }
 
+
+    @Converter
+    public static class StringSetConverter implements AttributeConverter<Set<String>, String> {
+        private static final String SPLIT_CHAR = ";";
+
+        @Override
+        public String convertToDatabaseColumn(Set<String> stringSet) {
+            return stringSet != null ? String.join(SPLIT_CHAR, stringSet) : "";
+        }
+
+
+        @Override
+        public Set<String> convertToEntityAttribute(String string) {
+            return string != null ? new HashSet<>(Arrays.asList(string.split(SPLIT_CHAR))) : emptySet();
+        }
+    }
 }

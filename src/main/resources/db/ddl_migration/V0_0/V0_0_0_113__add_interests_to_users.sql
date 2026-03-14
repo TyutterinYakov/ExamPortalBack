@@ -1,0 +1,3 @@
+ALTER TABLE users DROP COLUMN interests;
+
+ALTER TABLE users ADD COLUMN interests VARCHAR(1000);
