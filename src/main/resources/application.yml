@@ -28,6 +28,6 @@ exam:
     image-default: default.png
     jwt-header: Authorization
     jwt-secret: ${JWT_SECRET}
-    jwt-expiration: 604800
+    jwt-expiration: 6048000
 
 

@@ -31,12 +31,13 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.deleteById(questionId);
     }
 
-    //Не работает обновление!!! Нужно связать ответ по айдишнику с вопросом и с самой записью в БД. Раньше был json
     @Override
     public void update(UUID questionId, QuestionE questionE) {
-        QuestionE havingQuestionE = questionRepository.findByIdWithThrow(questionId);
+        final QuestionE havingQuestionE = questionRepository.findByIdWithThrow(questionId);
         questionE.setQuiz(havingQuestionE.getQuiz());
         questionE.setId(questionId);
+        final List<AnswerE> answers = questionE.getAnswers();
+        answers.forEach(a -> a.setQuestion(questionE));
         questionRepository.save(questionE);
     }
 
@@ -44,6 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
     public void create(UUID quizId, QuestionE questionE) {
         final QuizE quiz = quizRepository.findByIdWithThrow(quizId);
         questionE.setQuiz(quiz);
+        questionE.getAnswers().forEach(a -> a.setQuestion(questionE));
         questionRepository.save(questionE);
     }
 
