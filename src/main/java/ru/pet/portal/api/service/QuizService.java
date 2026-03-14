@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface QuizService {
 
-    void create(UUID categoryId, QuizE quiz);
+    QuizE create(UUID categoryId, QuizE quiz);
 
     void deleteById(UUID uuid);
 

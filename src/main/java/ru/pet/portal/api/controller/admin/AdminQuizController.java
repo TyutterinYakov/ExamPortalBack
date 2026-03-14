@@ -1,5 +1,6 @@
 package ru.pet.portal.api.controller.admin;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,7 +11,11 @@ import ru.pet.portal.api.controller.dto.quiz.QuizRequestDto;
 import ru.pet.portal.api.controller.dto.quiz.QuizResponseDto;
 import ru.pet.portal.api.controller.dto.validation.group.Create;
 import ru.pet.portal.api.controller.dto.validation.group.Update;
+import ru.pet.portal.api.facade.QuizFacade;
+import ru.pet.portal.api.service.GigaChatService;
 import ru.pet.portal.api.service.QuizService;
+import ru.pet.portal.api.service.dto.gigachat.GeneratedQuiz;
+import ru.pet.portal.api.service.dto.gigachat.QuestionGenerationRequest;
 import ru.pet.portal.store.entity.QuizE;
 
 import java.util.List;
@@ -25,6 +30,8 @@ public class AdminQuizController {
 
     private final QuizService quizService;
     private final QuizMapper quizMapper;
+    private final GigaChatService gigaChatService;
+    private final QuizFacade quizFacade;
 
     @PostMapping("quizzes")
     @ResponseStatus(HttpStatus.CREATED)
@@ -63,6 +70,12 @@ public class AdminQuizController {
     public List<QuizResponseDto> getAll(@RequestParam(defaultValue = "0") @Min(0) int from,
                                         @RequestParam(defaultValue = "10") @Min(1) int size) {
         return quizService.getAll(from, size).stream().map(quizMapper::toDto).toList();
+    }
+
+    @PostMapping("quizzes/generate")
+    public void generate(@Valid @RequestBody QuestionGenerationRequest rq) {
+        final GeneratedQuiz generatedQuiz = gigaChatService.generateQuiz(rq);
+        quizFacade.generate(generatedQuiz, rq.getCategoryId());
     }
 
 

@@ -3,9 +3,11 @@ package ru.pet.portal.api.service.impl;
 import chat.giga.model.completion.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Profile("gigachat")
 public class GigaChatServiceImpl implements GigaChatService {
 
     private final RestTemplate restTemplate;
@@ -72,8 +75,7 @@ public class GigaChatServiceImpl implements GigaChatService {
                         Создай тест по теме '%s' уровня сложности '%s' с %d вопросами.
                         Формат вопросов: %s. Для каждого вопроса укажи:
                             - содержание вопроса
-                            - список ответов (4 варианта)
-                            - индекс правильного ответа (начиная с 0)
+                            - список ответов (МАКСИМУМ 4 варианта, МИНИМУМ 2)
                             - количество баллов за вопрос (от 1 до 5)
                             - время на ответ (в секундах, от 30 до 120)
                         Верни ответ в формате JSON, соответствующем следующей структуре:
@@ -105,7 +107,7 @@ public class GigaChatServiceImpl implements GigaChatService {
     }
 
     private String getRussianFormat(String format) {
-        return switch (format.toLowerCase()) {
+        return switch ((String.valueOf(format)).toLowerCase()) {
             case "multiple-choice" -> "с несколькими вариантами ответов";
             case "true-false" -> "на определение верности утверждения";
             default -> "с кратким ответом";

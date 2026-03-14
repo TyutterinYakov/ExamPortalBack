@@ -14,6 +14,7 @@ public interface QuestionService {
 
     void create(UUID quizId, QuestionE questionE);
 
+    void create(List<QuestionE> questions);
 
     QuestionE getById(UUID questionId);
 

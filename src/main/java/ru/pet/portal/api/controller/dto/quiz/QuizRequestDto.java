@@ -13,10 +13,10 @@ import java.util.UUID;
 @Getter
 @Setter
 public class QuizRequestDto {
-    @Size(min = 3, max = 30, groups = {Create.class, Update.class})
+    @Size(min = 3, max = 100, groups = {Create.class, Update.class})
     @NotBlank(groups = {Create.class})
     private String title;
-    @Size(min = 3, max = 1000, groups = {Create.class, Update.class})
+    @Size(max = 1000, groups = {Create.class, Update.class})
     private String description;
     @NotNull(groups = {Create.class})
     private Boolean active;

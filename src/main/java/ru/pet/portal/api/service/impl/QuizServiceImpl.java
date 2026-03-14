@@ -28,10 +28,10 @@ public class QuizServiceImpl implements QuizService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public void create(UUID categoryId, QuizE quiz) {
+    public QuizE create(UUID categoryId, QuizE quiz) {
         CategoryE categoryE = categoryRepository.findByIdWithThrow(categoryId);
         quiz.setCategory(categoryE);
-        quizRepository.save(quiz);
+        return quizRepository.saveAndFlush(quiz);
     }
 
     @Override

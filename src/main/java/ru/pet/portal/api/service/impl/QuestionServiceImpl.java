@@ -47,6 +47,11 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    public void create(List<QuestionE> questions) {
+        questionRepository.saveAll(questions);
+    }
+
+    @Override
     public QuestionE getById(UUID questionId) {
         return questionRepository.findByIdWithThrow(questionId);
     }
