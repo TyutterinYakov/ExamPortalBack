@@ -5,11 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import ru.pet.portal.store.entity.ExamResultE;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ExamResultRepository extends JpaRepository<ExamResultE, UUID> {
     @Query("select e from ExamResultE e join fetch e.quiz where e.user.id = :userId")
     List<ExamResultE> findAllByUserId(UUID userId);
+
+    @Query("select e.quiz.id from ExamResultE e where e.user.id = :userId")
+    Set<UUID> findQuizIdsByUserId(UUID userId);
 
     @Query("select e from ExamResultE e where e.quiz.id = :quizId")
     List<ExamResultE> findAllByQuizId(UUID quizId);

@@ -37,5 +37,11 @@ public class QuizE {
             inverseJoinColumns = @JoinColumn(name = "position_id")
     )
     private List<PositionE> positions;
+    /**
+     * Флаг, указывающий на то, что тест обязателен (используется для пометки теста, который должен пройти
+     * человек по должности)
+     */
+    @Transient
+    private boolean required;
 
 }

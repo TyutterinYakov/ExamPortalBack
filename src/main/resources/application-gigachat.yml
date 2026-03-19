@@ -1,4 +1,4 @@
 gigachat:
   api-key: ${GIGACHAT_API_KEY}
-  model: GigaChat
+  model: GigaChat-2-Pro
   timeout: 30000

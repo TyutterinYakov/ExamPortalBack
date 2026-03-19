@@ -32,7 +32,7 @@ public class PrivateQuizController {
 
     @GetMapping("quizzes")
     public List<QuizResponseDto> getAllByActive(@Min(0) @RequestParam(defaultValue = "0") int from,
-                                                @Min(1) @RequestParam(defaultValue = "10") int size,
+                                                @Min(1) @RequestParam(defaultValue = "100") int size,
                                                 UsernamePasswordAuthenticationToken token) {
         final UserE userE = (UserE) token.getPrincipal();
         return quizService.getAllByActive(from, size, userE).stream().map(quizMapper::toDto).toList();
@@ -40,7 +40,7 @@ public class PrivateQuizController {
 
     @GetMapping("{categoryId}/quizzes")
     public List<QuizResponseDto> getAllByCategoryIdAndActive(@Min(0) @RequestParam(defaultValue = "0") int from,
-                                                             @Min(1) @RequestParam(defaultValue = "10") int size,
+                                                             @Min(1) @RequestParam(defaultValue = "100") int size,
                                                              @PathVariable("categoryId") UUID categoryId,
                                                              UsernamePasswordAuthenticationToken token) {
         final UserE userE = (UserE) token.getPrincipal();

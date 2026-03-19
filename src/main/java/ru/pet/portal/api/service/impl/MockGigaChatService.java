@@ -3,17 +3,22 @@ package ru.pet.portal.api.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import ru.pet.portal.api.service.GigaChatService;
 import ru.pet.portal.api.service.dto.gigachat.GeneratedQuiz;
 import ru.pet.portal.api.service.dto.gigachat.QuestionGenerationRequest;
+import ru.pet.portal.store.entity.QuizE;
 
 import java.io.File;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Profile("!gigachat")
+@Slf4j
 public class MockGigaChatService implements GigaChatService {
     private final ObjectMapper objectMapper;
 
@@ -229,5 +234,11 @@ public class MockGigaChatService implements GigaChatService {
                      ]
                  }
                 """, GeneratedQuiz.class);
+    }
+
+    @Override
+    public Set<UUID> getRecommendations(Set<String> interests, Set<Object[]> quizWithNameAndId) {
+        log.info("No recommendations from mock");
+        return Set.of();
     }
 }

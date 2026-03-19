@@ -25,5 +25,9 @@ public class QuizResponseDto {
 	private long time;
 	private CategoryResponseDto category;
 	private List<PositionResponseDto> positions;
+	/**
+	 * Флаг, указывающий на обязательность прохождения теста
+	 */
+	private boolean required;
 
 }
