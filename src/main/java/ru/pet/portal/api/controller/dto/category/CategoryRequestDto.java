@@ -18,8 +18,7 @@ public class CategoryRequestDto {
 	@NotBlank(groups = Create.class)
 	@Size(max = 75, min = 3, groups = {Create.class, Update.class})
 	private String title;
-	@Size(max = 1000, min = 3, groups = {Create.class, Update.class})
-	@NotBlank(groups = Create.class)
+	@Size(max = 1000, groups = {Create.class, Update.class})
 	private String description;
 	
 }

@@ -1,0 +1,40 @@
+@startuml
+'!include <bpmn/bpmn>
+
+title Exam Portal Application Workflow
+
+' Actors
+actor Student
+actor Teacher
+actor Admin
+
+' Main process
+rectangle "Exam Portal System" as system {
+
+  ' Start event
+  start
+  
+  ' User authentication
+  :User Login;
+  if (Role?) then (Student)
+    :View Available Exams;
+    :Start Exam;
+    :Answer Questions;
+    :Submit Exam;
+    :Receive Results;
+  else (Teacher)
+    :Manage Questions;
+    :Create Exams;
+    :Review Submissions;
+    :Grade Exams;
+  else (Admin)
+    :Manage Users;
+    :Configure System;
+    :Monitor Activity;
+  endif
+  
+  ' End process
+  stop
+}
+
+@enduml

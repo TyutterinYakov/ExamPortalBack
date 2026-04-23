@@ -1,0 +1,48 @@
+@startuml
+' Настройки внешнего вида
+skinparam defaultTextAlignment center
+skinparam sequence {
+    ArrowColor #333333
+    LifeLineBorderColor #666666
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantPadding 20
+    SpaceWidth 50
+}
+
+actor Пользователь
+participant "Сервис" as System
+participant "ГигаЧат" as GigaChat
+database "База данных" as Database
+
+Пользователь -> System: Запросить рекомендации тестов
+activate System
+
+System -> Database: Получить профиль пользователя и список доступных тестов
+activate Database
+Database --> System: Интересы пользователя и каталог тестов
+deactivate Database
+
+alt Нет данных о пользователе или тестах
+    System --> Пользователь: Вернуть пустой список
+    deactivate System
+else Есть данные для анализа
+    System -> System: Подготовить контекст запроса (интересы + тесты)
+    System -> GigaChat: Отправить запрос на подбор релевантных тестов
+    activate GigaChat
+    GigaChat --> System: Вернуть идентификаторы рекомендованных тестов
+    deactivate GigaChat
+
+    alt Рекомендации не найдены
+        System --> Пользователь: Вернуть пустой список
+        deactivate System
+    else Есть рекомендованные тесты
+        System -> Database: Загрузить полную информацию по идентификаторам тестов
+        activate Database
+        Database --> System: Данные о рекомендованных тестах
+        deactivate Database
+
+        System --> Пользователь: Вернуть список рекомендованных тестов
+        deactivate System
+    end
+end
+@enduml

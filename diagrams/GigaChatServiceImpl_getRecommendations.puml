@@ -1,0 +1,31 @@
+@startuml
+' Диаграмма последовательности для метода getRecommendations
+' Бизнес-сценарий на русском языке
+
+actor Пользователь
+entity "Профиль пользователя" as UserProfile
+control "Сервис рекомендаций" as RecommendationService
+boundary "GigaChat API" as GigaChatAPI
+entity "Профиль пользователя" as UserProfile
+
+Пользователь -> UserProfile: Запрос профиля
+UserProfile --> Пользователь: Данные пользователя
+
+Пользователь -> RecommendationService: Запрос рекомендаций
+
+RecommendationService -> RecommendationService: Формирование промпта
+
+RecommendationService -> GigaChatAPI: Отправить запрос на генерацию
+GigaChatAPI --> RecommendationService: Получить сгенерированные рекомендации
+
+RecommendationService --> Пользователь: Вернуть рекомендации
+
+note right
+  Бизнес-сценарий:
+  Пользователь запрашивает рекомендации.
+  Система собирает данные о пользователе,
+  после чего формируется запрос к GigaChat
+  для генерации персонализированных рекомендаций.
+end note
+
+@enduml

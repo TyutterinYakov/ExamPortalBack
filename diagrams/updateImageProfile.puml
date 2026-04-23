@@ -1,0 +1,57 @@
+@startuml
+' Настройки внешнего вида
+skinparam defaultTextAlignment center
+skinparam sequence {
+    ArrowColor #333333
+    LifeLineBorderColor #666666
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantPadding 20
+    SpaceWidth 50
+}
+
+actor Пользователь
+participant "Сервис" as ProfileSystem
+database "Файловое хранилище" as FileStorage
+database "База данных" as UserDatabase
+
+Пользователь -> ProfileSystem: Загрузить новое фото профиля
+activate ProfileSystem
+
+ProfileSystem -> FileStorage: Сохранить новое изображение в хранилище
+activate FileStorage
+FileStorage --> ProfileSystem: Вернуть путь к новому файлу
+deactivate FileStorage
+
+ProfileSystem -> UserDatabase: Получить данные текущего пользователя
+activate UserDatabase
+UserDatabase --> ProfileSystem: Передать информацию о пользователе (включая старое фото)
+deactivate UserDatabase
+
+alt Старое фото существует и не является стандартным
+    ProfileSystem -> FileStorage: Удалить старое изображение из хранилища
+    activate FileStorage
+    FileStorage --> ProfileSystem: Подтверждение удаления
+    deactivate FileStorage
+end
+
+ProfileSystem -> ProfileSystem: Обновить ссылку на фото в профиле
+
+ProfileSystem -> UserDatabase: Сохранить обновлённый профиль
+activate UserDatabase
+UserDatabase --> ProfileSystem: Подтверждение сохранения
+deactivate UserDatabase
+
+ProfileSystem --> Пользователь: Уведомить об успешном обновлении фото
+deactivate ProfileSystem
+
+note right of ProfileSystem
+  Бизнес-сценарий обновления изображения профиля:
+  - Пользователь загружает новое фото.
+  - Система сохраняет его во внешнем хранилище.
+  - Получает данные профиля, включая старое фото.
+  - Если старое фото — кастомное (не стандартное), оно удаляется.
+  - Профиль обновляется с новой ссылкой.
+  - Результат возвращается пользователю.
+end note
+
+@enduml

@@ -1,0 +1,67 @@
+@startuml
+' Настройка внешнего вида для лучшей читаемости
+skinparam defaultTextAlignment center
+skinparam sequence {
+    ArrowColor #333333
+    LifeLineBorderColor #666666
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantPadding 20
+    SpaceWidth 50
+}
+
+actor "Пользователь" as User
+participant "Система управления тестами" as System
+participant "Репозиторий результатов" as ResultsStore
+participant "Каталог тестов" as QuizCatalog
+participant "Сервис рекомендаций (ИИ)" as RecommendationAI
+participant "Сервис структуры вопросов" as QuestionSpec
+
+User -> System: Запросить список активных тестов
+activate System
+
+System -> ResultsStore: Получить ID уже пройденных тестов
+activate ResultsStore
+ResultsStore --> System: Список пройденных тестов
+deactivate ResultsStore
+
+System -> QuizCatalog: Найти активные обязательные тесты\n(исключая пройденные)
+activate QuizCatalog
+QuizCatalog --> System: Список обязательных тестов
+deactivate QuizCatalog
+
+System -> System: Пометить тесты как «обязательные»
+
+alt Количество тестов меньше требуемого
+    System -> System: Подготовить список исключений\n(уже найденные тесты)
+
+    System -> QuizCatalog: Получить названия доступных тестов\n(ещё не пройденных)
+    activate QuizCatalog
+    QuizCatalog --> System: Список тестов с названиями
+    deactivate QuizCatalog
+
+    System -> RecommendationAI: Подобрать рекомендации\nна основе интересов пользователя и тем тестов
+    activate RecommendationAI
+    RecommendationAI --> System: Список рекомендуемых тестов
+    deactivate RecommendationAI
+
+    alt Есть рекомендации
+        System -> QuizCatalog: Получить полную информацию\nпо рекомендованным тестам
+        activate QuizCatalog
+        QuizCatalog --> System: Дополнительные тесты
+        deactivate QuizCatalog
+
+        System -> System: Добавить рекомендованные тесты\nв общий список
+    end
+end
+
+System -> QuestionSpec: Получить структуру каждого теста\n(количество вопросов, типы и т.п.)
+activate QuestionSpec
+QuestionSpec --> System: Данные о структуре
+deactivate QuestionSpec
+
+System -> System: Добавить информацию о структуре\nк каждому тесту
+
+System --> User: Вернуть итоговый список тестов
+deactivate System
+
+@enduml

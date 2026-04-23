@@ -1,0 +1,56 @@
+@startuml
+actor User
+participant "QuizService" as Service
+participant "ExamResultRepository" as ExamRepo
+participant "QuizRepository" as QuizRepo
+participant "GigaChatService" as GigaChat
+participant "QuestionRepository" as QuestionRepo
+
+User -> Service: getAllByActive(from, size, user)
+activate Service
+
+Service -> ExamRepo: findQuizIdsByUserId(userId)
+activate ExamRepo
+ExamRepo --> Service: excludeQuizIds
+deactivate ExamRepo
+
+Service -> QuizRepo: findAllByActive(PageRequest, true, userId, excludeQuizIds)
+activate QuizRepo
+QuizRepo --> Service: quizzes
+deactivate QuizRepo
+
+Service -> Service: setRequired(true) for each quiz
+
+alt quizzes.size < size
+    Service -> Service: excludeQuizIds += quizzes.ids
+    
+    Service -> QuizRepo: findTitleAndId(excludeQuizIds)
+    activate QuizRepo
+    QuizRepo --> Service: quizWithNameAndId
+    deactivate QuizRepo
+    
+    Service -> GigaChat: getRecommendations(user.interests, quizWithNameAndId)
+    activate GigaChat
+    GigaChat --> Service: recommendations
+    deactivate GigaChat
+    
+    alt !recommendations.isEmpty()
+        Service -> QuizRepo: findAllByIds(recommendations, PageRequest)
+        activate QuizRepo
+        QuizRepo --> Service: recommendedQuizzes
+        deactivate QuizRepo
+        
+        Service -> Service: quizzes.addAll(recommendedQuizzes)
+    end
+end
+
+Service -> QuestionRepo: getQuizSpecificationByQuizId(quizzes)
+activate QuestionRepo
+QuestionRepo --> Service: quizSpecificationByQuizId
+deactivate QuestionRepo
+
+Service -> Service: setQuizSpecification(quizzes)
+
+Service --> User: quizzes
+deactivate Service
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+' Настройки внешнего вида
+skinparam defaultTextAlignment center
+skinparam sequence {
+    ArrowColor #333333
+    LifeLineBorderColor #666666
+    LifeLineBackgroundColor #FFFFFF
+    ParticipantPadding 20
+    SpaceWidth 50
+}
+
+actor Пользователь
+participant "Сервис" as Generator
+participant "ГигаЧат" as AIModel
+database "База данных" as Database
+
+Пользователь -> Generator: Запрос на создание нового теста
+activate Generator
+
+Generator -> Generator: Подготовить описание задания\n(на основе темы, сложности теста)
+Generator -> AIModel: Отправить запрос с промптом
+activate AIModel
+
+AIModel --> Generator: Вернуть сгенерированный тест
+deactivate AIModel
+
+Generator -> Generator: Проверить структуру и корректность теста
+alt Тест не соответствует формату
+    Generator --> Пользователь: Вернуть ошибку: невалидный формат
+    deactivate Generator
+else Тест валиден
+    Generator -> Database: Сохранить тест в системе
+    activate Database
+    Database --> Generator: Подтверждение сохранения
+    deactivate Database
+
+    Generator --> Пользователь: Вернуть готовый тест
+    deactivate Generator
+end
+
+note right of Generator
+  Диаграмма описывает процесс генерации теста:
+  - Пользователь инициирует создание.
+  - Система использует ИИ для генерации.
+  - Результат проверяется и сохраняется.
+  - Только после этого возвращается пользователю.
+end note
+
+@enduml
