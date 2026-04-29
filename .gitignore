@@ -10,3 +10,5 @@ target/
 /log
 .idea/
 .gigaide/*
+.env
+.env.local
