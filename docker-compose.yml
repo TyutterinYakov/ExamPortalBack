@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.3
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data
+    ports:
+      - "${HOST_PORT_POSTGRES}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: no
+    networks:
+      - app-network
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ACCESS_KEY_FILE: access_key
+      MINIO_SECRET_KEY_FILE: secret_key
+      MINIO_ROOT_USER_FILE: access_key
+      MINIO_ROOT_PASSWORD_FILE: secret_key
+      MINIO_KMS_SECRET_KEY_FILE: kms_master_key
+      MINIO_UPDATE_MINISIGN_PUBKEY: RWTx5Zr1tiHQLwG9keckT0c45M3AGeHD6IvimQHpyRywVWGbP1aVSGav
+      MINIO_CONFIG_ENV_FILE: config.env
+      MC_CONFIG_DIR: /tmp/.mc
+    ports:
+      - "${HOST_PORT_MINIO}:9000"
+      - "${HOST_PORT_MINIO_CONSOLE}:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: no
+    networks:
+      - app-network
+
+  frontend:
+    image: exam-portal-front
+    container_name: exam-portal-front
+    ports:
+      - "8888:80"
+    restart: no
+    networks:
+      - app-network
+
+  backend:
+    image: exam-portal-back
+    container_name: exam-portal-back
+    environment:
+      JAVA_OPTS: >-
+        -DDB_PASSWORD=${DB_PASSWORD}
+        -DDB_URL=${DB_URL}
+        -DDB_USERNAME=${DB_USERNAME}
+        -DFRONT_URL=${FRONT_URL}
+        -DGIGACHAT_API_KEY=${GIGACHAT_API_KEY}
+        -DJWT_SECRET=${JWT_SECRET}
+        -DMINIO_BUCKET=${MINIO_BUCKET}
+        -DMINIO_ENDPOINT=${MINIO_ENDPOINT}
+        -DMINIO_PASSWORD=${MINIO_PASSWORD}
+        -DMINIO_USER=${MINIO_USER}
+        -Dspring.profiles.active=minio,gigachat
+    ports:
+      - "${HOST_PORT_BACKEND}:8080"
+    depends_on:
+      - postgres
+      - minio
+    restart: no
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  app-network:
+    driver: bridge
