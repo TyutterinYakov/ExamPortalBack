@@ -1,12 +1,13 @@
 package ru.pet.portal.store.repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import ru.pet.portal.store.entity.UserE;
 
-public interface UserRepository extends JpaRepository<UserE, Long> {
+public interface UserRepository extends JpaRepository<UserE, UUID> {
 
     Optional<UserE> findByEmail(String email);
 
