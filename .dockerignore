@@ -1,0 +1,13 @@
+!.gitignore
+!.dockerignore
+**/*.dockerfile
+**/*.yml
+**/*.yaml
+**/*.properties
+**/*.txt
+**/*.log
+.git
+.mvn
+mvnw
+mvnw.cmd
+HELP.md
