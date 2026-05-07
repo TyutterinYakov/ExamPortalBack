@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.pet.portal.api.controller.dto.mapper.QuestionMapper;
 import ru.pet.portal.api.controller.dto.question.QuestionAdminRequestDto;
 import ru.pet.portal.api.controller.dto.question.QuestionAdminResponseDto;
+import ru.pet.portal.api.controller.dto.question.QuestionResponseDto;
 import ru.pet.portal.api.service.QuestionService;
 import ru.pet.portal.store.entity.QuestionE;
 
@@ -33,8 +34,8 @@ public class AdminQuestionController {
 
     @PostMapping("questions")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody @Valid QuestionAdminRequestDto question) {
-        questionService.create(question.getQuizId(), questionMapper.toEntity(question));
+    public QuestionAdminResponseDto create(@RequestBody @Valid QuestionAdminRequestDto question) {
+        return questionMapper.toAdminDto(questionService.create(question.getQuizId(), questionMapper.toEntity(question)));
     }
 
     @PutMapping("questions/{questionId}")

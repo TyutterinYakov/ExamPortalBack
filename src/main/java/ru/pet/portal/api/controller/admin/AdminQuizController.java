@@ -35,12 +35,13 @@ public class AdminQuizController {
 
     @PostMapping("quizzes")
     @ResponseStatus(HttpStatus.CREATED)
-    public void add(@RequestBody @Validated(Create.class) QuizRequestDto quizDto) {
+    public QuizResponseDto add(@RequestBody @Validated(Create.class) QuizRequestDto quizDto) {
         final QuizE quiz = quizMapper.toEntity(quizDto);
-        quizService.create(quizDto.getCategoryId(), quiz, quizDto.getPositions());
+        return quizMapper.toDto(quizService.create(quizDto.getCategoryId(), quiz, quizDto.getPositions()));
     }
 
     @DeleteMapping("quizzes/{quizId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable String quizId) {
         quizService.deleteById(UUID.fromString(quizId));
     }
