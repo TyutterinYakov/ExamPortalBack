@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.pet.portal.api.controller.dto.ErrorResponse;
+import ru.pet.portal.api.exception.NotFoundException;
 
 import static ru.pet.portal.api.controller.dto.ErrorResponse.create;
 
@@ -35,6 +36,12 @@ public class CustomExceptionHandler {
     public ErrorResponse throwable(Throwable ex) {
         log.error("message {}", ex.getMessage(), ex);
         return create().setMessage(ex.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void notFound(NotFoundException ex) {
+        log.error("not found {}", ex.getMessage(), ex);
     }
 
 
